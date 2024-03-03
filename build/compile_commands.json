@@ -1,0 +1,19 @@
+[
+{
+  "directory": "/home/wenwenyuyu/sylar/build",
+  "command": "/usr/bin/clang++-11     -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -g   -o CMakeFiles/test.dir/tests/test.cc.o -c /home/wenwenyuyu/sylar/tests/test.cc",
+  "file": "/home/wenwenyuyu/sylar/tests/test.cc"
+},
+
+{
+  "directory": "/home/wenwenyuyu/sylar/build",
+  "command": "/usr/bin/clang++-11  -Dsylar_EXPORTS   -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -g -fPIC   -o CMakeFiles/sylar.dir/sylar/log.cc.o -c /home/wenwenyuyu/sylar/sylar/log.cc",
+  "file": "/home/wenwenyuyu/sylar/sylar/log.cc"
+},
+
+{
+  "directory": "/home/wenwenyuyu/sylar/build",
+  "command": "/usr/bin/clang++-11  -Dsylar_EXPORTS   -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -g -fPIC   -o CMakeFiles/sylar.dir/sylar/util.cc.o -c /home/wenwenyuyu/sylar/sylar/util.cc",
+  "file": "/home/wenwenyuyu/sylar/sylar/util.cc"
+}
+]
