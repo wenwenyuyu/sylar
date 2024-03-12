@@ -6,5 +6,5 @@ CXX_FLAGS =  -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Wer
 
 CXX_DEFINES = -Dsylar_EXPORTS
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/home/wenwenyuyu/sylar/. 
 
