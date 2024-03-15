@@ -15,6 +15,8 @@ boost/lexical_cast.hpp
 -
 cctype
 -
+iostream
+-
 list
 -
 sstream
@@ -79,9 +81,17 @@ cstddef
 -
 cstdio
 -
+iostream
+-
 memory
 -
+ostream
+-
 sstream
+-
+stdexcept
+-
+string
 -
 tuple
 -
@@ -93,6 +103,14 @@ algorithm
 -
 utility
 -
+vector
+-
+yaml-cpp/node/node.h
+-
+yaml-cpp/node/parse.h
+-
+config.h
+/home/wenwenyuyu/sylar/sylar/config.h
 
 /home/wenwenyuyu/sylar/sylar/log.h
 singleton.h
@@ -119,7 +137,11 @@ map
 -
 
 /home/wenwenyuyu/sylar/sylar/singleton.h
+cstdio
+-
 memory
+-
+iostream
 -
 
 /home/wenwenyuyu/sylar/sylar/util.cc

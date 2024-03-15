@@ -8,9 +8,11 @@ CMakeFiles/sylar.dir/sylar/config.cc.o
  /home/wenwenyuyu/sylar/sylar/singleton.h
  /home/wenwenyuyu/sylar/sylar/util.h
 CMakeFiles/sylar.dir/sylar/log.cc.o
+ /home/wenwenyuyu/sylar/sylar/config.h
  /home/wenwenyuyu/sylar/sylar/log.cc
  /home/wenwenyuyu/sylar/sylar/log.h
  /home/wenwenyuyu/sylar/sylar/singleton.h
+ /home/wenwenyuyu/sylar/sylar/util.h
 CMakeFiles/sylar.dir/sylar/util.cc.o
  /home/wenwenyuyu/sylar/sylar/util.cc
  /home/wenwenyuyu/sylar/sylar/util.h

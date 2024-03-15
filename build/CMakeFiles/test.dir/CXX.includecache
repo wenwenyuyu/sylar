@@ -31,7 +31,11 @@ map
 -
 
 /home/wenwenyuyu/sylar/sylar/singleton.h
+cstdio
+-
 memory
+-
+iostream
 -
 
 /home/wenwenyuyu/sylar/sylar/util.h
@@ -44,6 +48,8 @@ stdint.h
 ../sylar/log.h
 /home/wenwenyuyu/sylar/sylar/log.h
 ctime
+-
+iostream
 -
 ../sylar/util.h
 /home/wenwenyuyu/sylar/sylar/util.h
