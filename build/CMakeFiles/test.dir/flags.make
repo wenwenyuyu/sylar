@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_FLAGS =  -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined  
 
-CXX_DEFINES = -DYAML_CPP_STATIC_DEFINE
+CXX_DEFINES = 
 
 CXX_INCLUDES = -I/home/wenwenyuyu/sylar/. 
 

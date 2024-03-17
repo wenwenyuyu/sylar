@@ -6,9 +6,31 @@
 
 #IncludeRegexTransform: 
 
+../sylar/mutex.h
+atomic
+-
+cstddef
+-
+cstdint
+-
+iostream
+-
+mutex
+-
+ostream
+-
+pthread.h
+-
+semaphore.h
+-
+
 /home/wenwenyuyu/sylar/sylar/log.h
 singleton.h
 /home/wenwenyuyu/sylar/sylar/singleton.h
+sylar/mutex.h
+/home/wenwenyuyu/sylar/sylar/sylar/mutex.h
+cstdint
+-
 stdint.h
 -
 string

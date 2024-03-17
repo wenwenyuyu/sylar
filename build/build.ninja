@@ -51,7 +51,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 build cmake_object_order_depends_target_test_config: phony || cmake_object_order_depends_target_sylar
 
 build CMakeFiles/test_config.dir/tests/test_config.cc.o: CXX_COMPILER__test_config ../tests/test_config.cc || cmake_object_order_depends_target_test_config
-  DEFINES = -DYAML_CPP_STATIC_DEFINE -D__FILE__=\"tests/test_config.cc\"
+  DEFINES = -D__FILE__=\"tests/test_config.cc\"
   DEP_FILE = CMakeFiles/test_config.dir/tests/test_config.cc.o.d
   FLAGS = -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g
   INCLUDES = -I../.
@@ -66,10 +66,10 @@ build CMakeFiles/test_config.dir/tests/test_config.cc.o: CXX_COMPILER__test_conf
 #############################################
 # Link the executable ../bin/test_config
 
-build ../bin/test_config: CXX_EXECUTABLE_LINKER__test_config CMakeFiles/test_config.dir/tests/test_config.cc.o | ../lib/libsylar.so /usr/local/lib/libyaml-cpp.a || ../lib/libsylar.so
+build ../bin/test_config: CXX_EXECUTABLE_LINKER__test_config CMakeFiles/test_config.dir/tests/test_config.cc.o | ../lib/libsylar.so || ../lib/libsylar.so
   FLAGS = -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g
   LINK_FLAGS = -rdynamic
-  LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib:/home/wenwenyuyu/sylar/lib  ../lib/libsylar.so  /usr/local/lib/libyaml-cpp.a
+  LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib:/home/wenwenyuyu/sylar/lib  ../lib/libsylar.so  -lpthread  -lyaml-cpp
   LINK_PATH = -L/usr/local/lib
   OBJECT_DIR = CMakeFiles/test_config.dir
   POST_BUILD = :
@@ -90,6 +90,42 @@ build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
 build edit_cache: phony CMakeFiles/edit_cache.util
 
 # =============================================================================
+# Object build statements for EXECUTABLE target test_thread
+
+
+#############################################
+# Order-only phony target for test_thread
+
+build cmake_object_order_depends_target_test_thread: phony || cmake_object_order_depends_target_sylar
+
+build CMakeFiles/test_thread.dir/tests/test_thread.cc.o: CXX_COMPILER__test_thread ../tests/test_thread.cc || cmake_object_order_depends_target_test_thread
+  DEFINES = -D__FILE__=\"tests/test_thread.cc\"
+  DEP_FILE = CMakeFiles/test_thread.dir/tests/test_thread.cc.o.d
+  FLAGS = -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g
+  INCLUDES = -I../.
+  OBJECT_DIR = CMakeFiles/test_thread.dir
+  OBJECT_FILE_DIR = CMakeFiles/test_thread.dir/tests
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target test_thread
+
+
+#############################################
+# Link the executable ../bin/test_thread
+
+build ../bin/test_thread: CXX_EXECUTABLE_LINKER__test_thread CMakeFiles/test_thread.dir/tests/test_thread.cc.o | ../lib/libsylar.so || ../lib/libsylar.so
+  FLAGS = -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g
+  LINK_FLAGS = -rdynamic
+  LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib:/home/wenwenyuyu/sylar/lib  ../lib/libsylar.so  -lpthread  -lyaml-cpp
+  LINK_PATH = -L/usr/local/lib
+  OBJECT_DIR = CMakeFiles/test_thread.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = ../bin/test_thread
+  TARGET_PDB = test_thread.dbg
+
+# =============================================================================
 # Object build statements for EXECUTABLE target test
 
 
@@ -99,7 +135,6 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 build cmake_object_order_depends_target_test: phony || cmake_object_order_depends_target_sylar
 
 build CMakeFiles/test.dir/tests/test.cc.o: CXX_COMPILER__test ../tests/test.cc || cmake_object_order_depends_target_test
-  DEFINES = -DYAML_CPP_STATIC_DEFINE
   DEP_FILE = CMakeFiles/test.dir/tests/test.cc.o.d
   FLAGS = -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g
   INCLUDES = -I../.
@@ -114,10 +149,10 @@ build CMakeFiles/test.dir/tests/test.cc.o: CXX_COMPILER__test ../tests/test.cc |
 #############################################
 # Link the executable ../bin/test
 
-build ../bin/test: CXX_EXECUTABLE_LINKER__test CMakeFiles/test.dir/tests/test.cc.o | ../lib/libsylar.so /usr/local/lib/libyaml-cpp.a || ../lib/libsylar.so
+build ../bin/test: CXX_EXECUTABLE_LINKER__test CMakeFiles/test.dir/tests/test.cc.o | ../lib/libsylar.so || ../lib/libsylar.so
   FLAGS = -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g
   LINK_FLAGS = -rdynamic
-  LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib:/home/wenwenyuyu/sylar/lib  ../lib/libsylar.so  /usr/local/lib/libyaml-cpp.a
+  LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib:/home/wenwenyuyu/sylar/lib  ../lib/libsylar.so  -lpthread  -lyaml-cpp
   LINK_PATH = -L/usr/local/lib
   OBJECT_DIR = CMakeFiles/test.dir
   POST_BUILD = :
@@ -158,6 +193,22 @@ build CMakeFiles/sylar.dir/sylar/config.cc.o: CXX_COMPILER__sylar ../sylar/confi
   OBJECT_DIR = CMakeFiles/sylar.dir
   OBJECT_FILE_DIR = CMakeFiles/sylar.dir/sylar
 
+build CMakeFiles/sylar.dir/sylar/thread.cc.o: CXX_COMPILER__sylar ../sylar/thread.cc || cmake_object_order_depends_target_sylar
+  DEFINES = -Dsylar_EXPORTS -D__FILE__=\"sylar/thread.cc\"
+  DEP_FILE = CMakeFiles/sylar.dir/sylar/thread.cc.o.d
+  FLAGS = -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g -fPIC
+  INCLUDES = -I../.
+  OBJECT_DIR = CMakeFiles/sylar.dir
+  OBJECT_FILE_DIR = CMakeFiles/sylar.dir/sylar
+
+build CMakeFiles/sylar.dir/sylar/mutex.cc.o: CXX_COMPILER__sylar ../sylar/mutex.cc || cmake_object_order_depends_target_sylar
+  DEFINES = -Dsylar_EXPORTS -D__FILE__=\"sylar/mutex.cc\"
+  DEP_FILE = CMakeFiles/sylar.dir/sylar/mutex.cc.o.d
+  FLAGS = -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g -fPIC
+  INCLUDES = -I../.
+  OBJECT_DIR = CMakeFiles/sylar.dir
+  OBJECT_FILE_DIR = CMakeFiles/sylar.dir/sylar
+
 
 # =============================================================================
 # Link build statements for SHARED_LIBRARY target sylar
@@ -166,7 +217,7 @@ build CMakeFiles/sylar.dir/sylar/config.cc.o: CXX_COMPILER__sylar ../sylar/confi
 #############################################
 # Link the shared library ../lib/libsylar.so
 
-build ../lib/libsylar.so: CXX_SHARED_LIBRARY_LINKER__sylar CMakeFiles/sylar.dir/sylar/log.cc.o CMakeFiles/sylar.dir/sylar/util.cc.o CMakeFiles/sylar.dir/sylar/config.cc.o
+build ../lib/libsylar.so: CXX_SHARED_LIBRARY_LINKER__sylar CMakeFiles/sylar.dir/sylar/log.cc.o CMakeFiles/sylar.dir/sylar/util.cc.o CMakeFiles/sylar.dir/sylar/config.cc.o CMakeFiles/sylar.dir/sylar/thread.cc.o CMakeFiles/sylar.dir/sylar/mutex.cc.o
   LANGUAGE_COMPILE_FLAGS = -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g
   LINK_PATH = -L/usr/local/lib
   OBJECT_DIR = CMakeFiles/sylar.dir
@@ -188,6 +239,8 @@ build test: phony ../bin/test
 
 build test_config: phony ../bin/test_config
 
+build test_thread: phony ../bin/test_thread
+
 # =============================================================================
 # Folder targets.
 
@@ -196,7 +249,7 @@ build test_config: phony ../bin/test_config
 #############################################
 # Folder: /home/wenwenyuyu/sylar/build
 
-build all: phony ../bin/test_config ../bin/test ../lib/libsylar.so
+build all: phony ../bin/test_config ../bin/test_thread ../bin/test ../lib/libsylar.so
 
 # =============================================================================
 # Unknown Build Time Dependencies.
@@ -215,14 +268,14 @@ default all
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | ../CMakeLists.txt ../cmake/utils.cmake /usr/local/lib/cmake/yaml-cpp/yaml-cpp-config-version.cmake /usr/local/lib/cmake/yaml-cpp/yaml-cpp-config.cmake /usr/local/lib/cmake/yaml-cpp/yaml-cpp-targets-noconfig.cmake /usr/local/lib/cmake/yaml-cpp/yaml-cpp-targets.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang-C.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-Clang-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-Clang-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.16.3/CMakeCCompiler.cmake CMakeFiles/3.16.3/CMakeCXXCompiler.cmake CMakeFiles/3.16.3/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | ../CMakeLists.txt ../cmake/utils.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang-C.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-Clang-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-Clang-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.16.3/CMakeCCompiler.cmake CMakeFiles/3.16.3/CMakeCXXCompiler.cmake CMakeFiles/3.16.3/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build ../CMakeLists.txt ../cmake/utils.cmake /usr/local/lib/cmake/yaml-cpp/yaml-cpp-config-version.cmake /usr/local/lib/cmake/yaml-cpp/yaml-cpp-config.cmake /usr/local/lib/cmake/yaml-cpp/yaml-cpp-targets-noconfig.cmake /usr/local/lib/cmake/yaml-cpp/yaml-cpp-targets.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang-C.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-Clang-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-Clang-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.16.3/CMakeCCompiler.cmake CMakeFiles/3.16.3/CMakeCXXCompiler.cmake CMakeFiles/3.16.3/CMakeSystem.cmake: phony
+build ../CMakeLists.txt ../cmake/utils.cmake /usr/share/cmake-3.16/Modules/CMakeCInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake /usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake /usr/share/cmake-3.16/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake-3.16/Modules/CMakeGenericSystem.cmake /usr/share/cmake-3.16/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake-3.16/Modules/CMakeLanguageInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake-3.16/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake-3.16/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang-C.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang-CXX.cmake /usr/share/cmake-3.16/Modules/Compiler/Clang.cmake /usr/share/cmake-3.16/Modules/Compiler/GNU.cmake /usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-Clang-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-Clang-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake-3.16/Modules/Platform/Linux-GNU.cmake /usr/share/cmake-3.16/Modules/Platform/Linux.cmake /usr/share/cmake-3.16/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.16.3/CMakeCCompiler.cmake CMakeFiles/3.16.3/CMakeCXXCompiler.cmake CMakeFiles/3.16.3/CMakeSystem.cmake: phony
 
 
 #############################################
