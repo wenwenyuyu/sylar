@@ -1,0 +1,30 @@
+2024:03:17 15:03:09	 name = class.map description = class map person type = St3mapINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE6PersonSt4lessIS5_ESaISt4pairIKS5_S6_EEE value = 
+2024:03:17 15:03:09	 name = system.umap description = system.umap type = St13unordered_mapINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiSt4hashIS5_ESt8equal_toIS5_ESaISt4pairIKS5_iEEE value = bbb: 2
+aaa: 1
+2024:03:17 15:03:09	 name = class.person description = class person type = 6Person value = name: ""
+age: 0
+sex: false
+2024:03:17 15:03:09	 name = system.map description = system.map type = St3mapINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiSt4lessIS5_ESaISt4pairIKS5_iEEE value = aaa: 1
+bbb: 2
+2024:03:17 15:03:09	 name = system.set description = system.set type = St3setIiSt4lessIiESaIiEE value = - 1
+- 2
+2024:03:17 15:03:09	 name = system.uset description = system.uset type = St13unordered_setIiSt4hashIiESt8equal_toIiESaIiEE value = - 2
+- 1
+2024:03:17 15:03:09	 name = system.list description = system.list type = NSt7__cxx114listIiSaIiEEE value = - 1
+- 2
+2024:03:17 15:03:09	 name = class.vec_map description = class map person type = St3mapINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt6vectorI6PersonSaIS7_EESt4lessIS5_ESaISt4pairIKS5_S9_EEE value = 
+2024:03:17 15:03:09	 name = system.vec description = system.vec type = St6vectorIiSaIiEE value = - 1
+- 2
+2024:03:17 15:03:09	 name = system.port description = system port type = i value = 8080
+2024:03:17 15:03:09	 name = logs description = logs config type = St3setIN5sylar9LogDefineESt4lessIS1_ESaIS1_EE value = - name: root
+  level: INFO
+  formatter: "%d%T%m%n"
+  appenders:
+    - ~
+    - type: StdoutLogAppender
+- name: system
+  level: DEBUG
+  formatter: "%d%T%m%n"
+  appenders:
+    - ~
+    - type: StdoutLogAppender

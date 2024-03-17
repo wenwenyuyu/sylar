@@ -1,4 +1,0 @@
-2024-03-03 21:04:40	11573	0	[DEBUG]	[root]	[/home/wenwenyuyu/sylar/tests/test.cc:28]	hello sylar
-2024-03-03 21:04:40	11573	0	[INFO]	[root]	[/home/wenwenyuyu/sylar/tests/test.cc:29]	info sylar
-2024-03-03 21:04:40	11573	0	[DEBUG]	[root]	[/home/wenwenyuyu/sylar/tests/test.cc:30]	hello
-2024-03-03 21:04:40	11573	0	[DEBUG]	[root]	[/home/wenwenyuyu/sylar/tests/test.cc:31]	test hello
