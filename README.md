@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2023-12-15 19:58:33
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-03-17 15:44:18
+ * @LastEditTime : 2024-04-08 15:58:25
  * @FilePath     : /README.md
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -559,7 +559,353 @@ private:
 
 
 ## 协程库封装
+使用无栈协程进行封装
 
+确保在一个线程内有一个主协程和多个子协程；主协程仅仅进行调度功能，如子协程运行结束后返回到主协程中
+
+    thread--> main fiber <---> sub fiber
+                  |
+                  |
+                  |
+              sub fiber  
+在主协程中进行子协程的创建和调度
+```cpp
+class Fiber : public std::enable_shared_from_this<Fiber> {
+  friend class Scheduler;
+public:
+  typedef std::shared_ptr<Fiber> ptr;
+
+  enum State {
+    INIT,
+    HOLD,
+    EXEC,
+    TERM,
+    READY,
+    EXCEPT
+  };
+
+  Fiber(std::function<void()> cb, std::uint32_t size = 0);
+  ~Fiber();
+  void reset(std::function<void()> cb);
+  void swapOut();
+  static void wait();
+  void resume();
+  static void Func();
+  static Fiber::ptr GetThis();
+  static void SetThis(Fiber *f);
+
+  uint64_t getId() const { return m_id; }
+  State getState() const { return m_state; }
+  static uint64_t TotalFibers();
+  static uint64_t GetId();
+
+  // static void MainFunc();
+  // static void CallerMainFunc();
+  // void call();
+  // void back();
+
+private:
+  Fiber();
+private:
+  std::uint64_t m_id = 0;
+  ucontext_t m_ctx;
+  void *m_stack = nullptr;
+  std::uint32_t m_stacksize = 0;
+  std::function<void()> m_cb;
+  State m_state = INIT;
+};
+
+```
+
+在协程的基础上，进行调度器的封装
+
+一个调度器包括多个线程池，多个任务队列
+
+线程池中的线程用来循环遍历任务队列，查看是否有任务可以进行
+
+若该任务队列没有任何任务，则调用提供的初始化任务
+
+```cpp
+class Scheduler {
+public:
+  typedef std::shared_ptr<Scheduler> ptr;
+  typedef Mutex MutexType;
+
+  Scheduler(std::size_t threads = 1, bool use_caller = true, const std::string& name = "");
+  virtual ~Scheduler();
+
+  const std::string &getName() const { return m_name; }
+  
+  void start();
+  void stop();
+
+  static Scheduler *GetThis();
+  static Fiber* GetMainFiber();
+
+  template <class FiberOrCb> void schedule(FiberOrCb fc, int thr = -1) {
+    bool need_tickle = false;
+    {
+      MutexType::Lock lock(m_mutex);
+      need_tickle = scheduNoLock(fc, thr);
+    }
+
+    if (need_tickle) {
+      tickle();
+    }
+  }
+
+protected:
+  /**
+   * @func: 
+   * @return {*}
+   * @description: 通知协程调度器有任务了
+   */  
+  virtual void tickle();
+
+  /**
+   * @func: 
+   * @return {*}
+   * @description: 协程调度开始函数
+   */  
+  void run();
+
+  /**
+   * @func: 
+   * @return {*}
+   * @description: 协程调度器是否可以停止了
+   */  
+  virtual bool stopping();
+
+  /**
+   * @func: 
+   * @return {*}
+   * @description: 协程调度器无任务时执行idle协程
+   */
+  virtual void idle();
+
+  void setThis();
+
+private:
+  template <class FiberOrCb> bool scheduNoLock(FiberOrCb fc, int thr) {
+    bool need_tickle = m_fibers.empty();
+    FiberAndThread ft(fc, thr);
+    if (ft.m_fiber || ft.m_cb) {
+      m_fibers.push_back(ft);
+    }
+    return need_tickle;
+  }
+
+private:
+  struct FiberAndThread{
+    // 协程
+    Fiber::ptr m_fiber;
+    // 任务
+    std::function<void()> m_cb;
+    // 指定运行线程id
+    int m_threadId;
+
+    FiberAndThread() { m_threadId = -1; }
+
+    FiberAndThread(Fiber::ptr f, int thr) : m_fiber(f), m_threadId(thr) {}
+
+    FiberAndThread(Fiber::ptr *f, int thr) : m_threadId(thr) {
+      m_fiber = std::move(*f);
+    }
+
+    FiberAndThread(std::function<void()> cb, int thr)
+        : m_cb(cb), m_threadId(thr) {}
+    FiberAndThread(std::function<void()> *cb, int thr) : m_threadId(thr) {
+      m_cb = std::move(*cb);
+    }
+
+    void reset() {
+      m_fiber = nullptr;
+      m_cb = nullptr;
+      m_threadId = -1;
+    }
+
+  };
+
+private:
+  // 调度器的互斥锁
+  MutexType m_mutex;
+  // 线程池
+  std::vector<Thread::ptr> m_threads;
+  // 任务消息队列
+  std::list<FiberAndThread> m_fibers;
+  // 主协程，设置use_caller为true时创造
+  Fiber::ptr m_rootFiber;
+  // 调度器名称
+  std::string m_name;
+
+protected:
+  std::vector<int> m_threadIds;
+  // 线程数量
+  std::size_t m_threadCount = 0;
+  std::atomic<std::size_t> m_activeThreadCount = {0};
+  std::atomic<std::size_t> m_idleThreadCount = {0};
+  // 是否停止
+  bool m_stopping = true;
+  bool auto_stopping = false;
+  // 主线程id
+  int m_rootThread = 0;
+};
+
+```
+
+在调度器的基础上，使用epoll进行io异步处理
+
+```cpp
+class IOManager : public Scheduler, public TimerManager{
+public:
+  typedef std::shared_ptr<IOManager> ptr;
+  typedef RWMutex RWMutexType;
+
+  enum Event {
+    NONE = 0x0,
+    READ = 0x1,
+    WRITE = 0x4
+  };
+
+private:
+  // epoll主要对fd进行操作
+  // 如果该fd可读，则触发读操作：将EventContext加入任务队列中
+  // 如果该fd可写，则触发写操作
+  // 在fd中封装回调函数，在触发事件时，将回调函数放入全局任务队列中
+  struct FdContext {
+    typedef Mutex MutexType;
+    
+    struct EventContext {
+      Scheduler *scheduler = nullptr;
+      Fiber::ptr fiber;
+      std::function<void()> cb;
+    };
+
+    EventContext &getContext(Event event);
+    void resetContext(EventContext &ctx);
+    void triggerEvent(Event event);
+
+    // 读任务
+    EventContext read;
+    // 写任务
+    EventContext write;
+    int fd;
+    // 事件属性
+    Event events = NONE;
+    MutexType mutex;
+  };
+  
+public:
+  
+  IOManager(std::size_t threads = 1, bool use_caller = true,
+            const std::string &name = "");
+  ~IOManager();
+
+  int addEvent(int fd, Event event, std::function<void()> cb = nullptr);
+  bool delEvent(int fd, Event event);
+  bool cancelEvent(int fd, Event event);
+  bool cancelAll(int fd);
+
+  static IOManager* GetThis();
+
+protected:
+  void tickle() override;
+  bool stopping() override;
+  bool stopping(uint64_t& timeout);
+  void idle() override;
+  void contextResize(std::size_t size);
+  void onTimerInsertedAtFront() override;
+
+private:
+  // epoll套接字
+  int m_epfd = 0;
+  // pipe套接字，方便唤醒epoll_wait
+  int m_ticklefds[2];
+  RWMutexType m_mutex;
+
+  std::atomic<std::size_t> m_pendingEventCount = {0};
+  std::vector<FdContext*> m_fdContexts;
+};
+
+```
+
+增加定时器操作
+```cpp
+// 定时器事件，规定在m_ms秒后发生m_cb事件
+class TimerManager;
+class Timer : public std::enable_shared_from_this<Timer> {
+  friend class TimerManager;
+
+public:
+  typedef std::shared_ptr<Timer> ptr;
+
+  // 取消该定时任务
+  bool cancel();
+  // 刷新该定时任务
+  bool refresh();
+  // 重置该定时任务
+  bool reset(uint64_t ms, bool from_now);
+
+private:
+  Timer(uint64_t ms, std::function<void()> cb, bool recurring,
+        TimerManager *manager);
+  Timer(uint64_t next);
+
+private:
+  // 是否为循环事件
+  bool m_recurring = false;
+  // 定时了多少微妙
+  uint64_t m_ms = 0;
+  // 多少小时后运行（将定时器定义的微秒转化到真实时间）
+  uint64_t m_next = 0;
+  std::function<void()> m_cb;
+  TimerManager *m_manager = nullptr;
+
+private:
+  // 确保可以比较
+  struct Comparator {
+    bool operator()(const Timer::ptr &lhs, const Timer::ptr &rhs) const;
+  };
+
+};
+
+class TimerManager {
+  friend class Timer;
+
+public:
+  typedef RWMutex RWMutexType;
+
+  TimerManager();
+  virtual ~TimerManager();
+
+  // 增加定时器
+  Timer::ptr addTimer(uint64_t ms, std::function<void()> cb,
+                      bool recurring = false);
+  // 增加条件定时器
+  Timer::ptr addConditionTimer(uint64_t ms, std::function<void()> cb,
+                               std::weak_ptr<void> weak_cond,
+                               bool recurring = false);
+  // 下一个任务还有多少时间触发
+  uint64_t getNextTimer();
+  // 获得所有该触发的定时器任务
+  void ListExpiredCb(std::vector<std::function<void()>> &cbs);
+
+protected:
+  // 增加的定时器是第一个定时器，需要通知一下
+  virtual void onTimerInsertedAtFront() = 0;
+  void addTimer(Timer::ptr val, RWMutexType::WriteLock &lock);
+  bool hasTimer();
+private:
+  bool detectClockRollover(uint64_t now_ms);
+private:
+  RWMutexType m_mutex;
+  // set比较器
+  std::set<Timer::ptr, Timer::Comparator> m_timers;
+  bool m_tickled = false;
+  uint64_t m_previousTime = 0;
+};
+
+```
 ## socket函数库
 
 ## http协议开发

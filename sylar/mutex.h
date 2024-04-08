@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-03-16 16:00:36
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-03-17 15:42:58
+ * @LastEditTime : 2024-04-02 19:53:48
  * @FilePath     : /sylar/mutex.h
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -46,8 +46,8 @@ private:
  */
 template <class T> struct ScopedLockImpl {
 public:
-  ScopedLockImpl(T &mutex) : m_mutx(mutex) {
-    m_mutx.lock();
+  ScopedLockImpl(T &mutex) : m_mutex(mutex) {
+    m_mutex.lock();
     locked = true;
   }
 
@@ -57,20 +57,20 @@ public:
 
   void lock() {
     if (!locked) {
-      m_mutx.lock();
+      m_mutex.lock();
       locked = true;
     }
   }
 
   void unlock() {
     if (locked) {
-      m_mutx.unlock();
+      m_mutex.unlock();
       locked = false;
     }
   }
   
 private:
-  T &m_mutx;
+  T &m_mutex;
   bool locked;
 };
 

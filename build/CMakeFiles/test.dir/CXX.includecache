@@ -24,11 +24,27 @@ pthread.h
 semaphore.h
 -
 
+../sylar/thread.h
+sylar/mutex.h
+../sylar/sylar/mutex.h
+functional
+-
+memory
+-
+pthread.h
+-
+sched.h
+-
+string
+-
+
 /home/wenwenyuyu/sylar/sylar/log.h
 singleton.h
 /home/wenwenyuyu/sylar/sylar/singleton.h
 sylar/mutex.h
 /home/wenwenyuyu/sylar/sylar/sylar/mutex.h
+sylar/thread.h
+/home/wenwenyuyu/sylar/sylar/sylar/thread.h
 cstdint
 -
 stdint.h
@@ -61,9 +77,15 @@ iostream
 -
 
 /home/wenwenyuyu/sylar/sylar/util.h
+cstdint
+-
 sched.h
 -
 stdint.h
+-
+string
+-
+vector
 -
 
 /home/wenwenyuyu/sylar/tests/test.cc
