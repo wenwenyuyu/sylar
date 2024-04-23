@@ -9,6 +9,12 @@ CMakeFiles/sylar.dir/sylar/config.cc.o: ../sylar/log.h
 CMakeFiles/sylar.dir/sylar/config.cc.o: ../sylar/singleton.h
 CMakeFiles/sylar.dir/sylar/config.cc.o: ../sylar/util.h
 
+CMakeFiles/sylar.dir/sylar/fdmanager.cc.o: ../sylar/hook.h
+CMakeFiles/sylar.dir/sylar/fdmanager.cc.o: ../sylar/mutex.h
+CMakeFiles/sylar.dir/sylar/fdmanager.cc.o: ../sylar/singleton.h
+CMakeFiles/sylar.dir/sylar/fdmanager.cc.o: ../sylar/fdmanager.cc
+CMakeFiles/sylar.dir/sylar/fdmanager.cc.o: ../sylar/fdmanager.h
+
 CMakeFiles/sylar.dir/sylar/fiber.cc.o: ../sylar/config.h
 CMakeFiles/sylar.dir/sylar/fiber.cc.o: ../sylar/fiber.h
 CMakeFiles/sylar.dir/sylar/fiber.cc.o: ../sylar/log.h
@@ -20,6 +26,20 @@ CMakeFiles/sylar.dir/sylar/fiber.cc.o: ../sylar/thread.h
 CMakeFiles/sylar.dir/sylar/fiber.cc.o: ../sylar/util.h
 CMakeFiles/sylar.dir/sylar/fiber.cc.o: ../sylar/fiber.cc
 CMakeFiles/sylar.dir/sylar/fiber.cc.o: ../sylar/fiber.h
+
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/config.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/fdmanager.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/fiber.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/iomanager.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/log.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/mutex.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/scheduler.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/singleton.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/thread.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/timer.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/util.h
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/hook.cc
+CMakeFiles/sylar.dir/sylar/hook.cc.o: ../sylar/hook.h
 
 CMakeFiles/sylar.dir/sylar/iomanager.cc.o: ../sylar/fiber.h
 CMakeFiles/sylar.dir/sylar/iomanager.cc.o: ../sylar/log.h
@@ -45,6 +65,7 @@ CMakeFiles/sylar.dir/sylar/mutex.cc.o: ../sylar/mutex.cc
 CMakeFiles/sylar.dir/sylar/mutex.cc.o: ../sylar/mutex.h
 
 CMakeFiles/sylar.dir/sylar/scheduler.cc.o: ../sylar/fiber.h
+CMakeFiles/sylar.dir/sylar/scheduler.cc.o: ../sylar/hook.h
 CMakeFiles/sylar.dir/sylar/scheduler.cc.o: ../sylar/marco.h
 CMakeFiles/sylar.dir/sylar/scheduler.cc.o: ../sylar/mutex.h
 CMakeFiles/sylar.dir/sylar/scheduler.cc.o: ../sylar/thread.h

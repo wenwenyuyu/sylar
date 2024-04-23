@@ -7,4 +7,5 @@
 /home/wenwenyuyu/sylar/build/CMakeFiles/edit_cache.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_thread.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test.dir
+/home/wenwenyuyu/sylar/build/CMakeFiles/test_hook.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/sylar.dir

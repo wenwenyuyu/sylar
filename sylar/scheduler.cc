@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-03-21 10:15:45
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-08 15:39:02
+ * @LastEditTime : 2024-04-16 15:21:58
  * @FilePath     : /sylar/scheduler.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -11,6 +11,7 @@
 
 #include "scheduler.h"
 #include "sylar/fiber.h"
+#include "sylar/hook.h"
 #include "sylar/marco.h"
 #include "log.h"
 #include "sylar/thread.h"
@@ -145,6 +146,7 @@ void Scheduler::stop() {
  */
 void Scheduler::run() {
   SYLAR_LOG_INFO(g_logger) << "thread run , id = " << sylar::getThreadId();
+  set_hook_enable(true);
   setThis();
 
   // 确保当前的主协程为该线程的主协程，防止子协程返回时错误返回
