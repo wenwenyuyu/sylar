@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-01 16:42:01
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-08 15:44:59
+ * @LastEditTime : 2024-04-27 19:51:36
  * @FilePath     : /sylar/iomanager.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -311,7 +311,7 @@ bool IOManager::cancelAll(int fd) {
   lock.unlock();
 
   FdContext::MutexType::Lock lock2(fd_ctx->mutex);
-  if (fd_ctx->events) {
+  if (!fd_ctx->events) {
     return false;
   }
 

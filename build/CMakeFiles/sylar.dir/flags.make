@@ -20,6 +20,10 @@ CXX_INCLUDES = -I/home/wenwenyuyu/sylar/.
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/fdmanager.cc.o_DEFINES = __FILE__="sylar/fdmanager.cc"
 
+# Custom defines: CMakeFiles/sylar.dir/sylar/address.cc.o_DEFINES = __FILE__="sylar/address.cc"
+
+# Custom defines: CMakeFiles/sylar.dir/sylar/socket.cc.o_DEFINES = __FILE__="sylar/socket.cc"
+
 # Custom defines: CMakeFiles/sylar.dir/sylar/timer.cc.o_DEFINES = __FILE__="sylar/timer.cc"
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/hook.cc.o_DEFINES = __FILE__="sylar/hook.cc"

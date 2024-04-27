@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-16 14:21:45
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-17 18:41:27
+ * @LastEditTime : 2024-04-27 16:10:13
  * @FilePath     : /sylar/hook.h
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -11,6 +11,7 @@
 #ifndef __SYLAR_HOOK_H__
 #define __SYLAR_HOOK_H__
 
+#include <cstdint>
 #include <sys/types.h>
 #include <unistd.h>
 #include <time.h>
@@ -92,6 +93,7 @@ extern getsockopt_fun getsockopt_f;
 typedef int (*setsockopt_fun)(int sockfd, int level, int optname, const void *optval, socklen_t optlen);
 extern setsockopt_fun setsockopt_f;
 
+extern int connect_with_timeout(int fd, const struct sockaddr* addr, socklen_t addrlen, uint64_t timeout_ms);
 }
 
 

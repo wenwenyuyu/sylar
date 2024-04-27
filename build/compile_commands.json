@@ -13,6 +13,12 @@
 
 {
   "directory": "/home/wenwenyuyu/sylar/build",
+  "command": "/usr/bin/clang++-11  -D__FILE__=\\\"tests/test_address.cc\\\" -I../.   -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g   -o CMakeFiles/test_address.dir/tests/test_address.cc.o -c /home/wenwenyuyu/sylar/tests/test_address.cc",
+  "file": "/home/wenwenyuyu/sylar/tests/test_address.cc"
+},
+
+{
+  "directory": "/home/wenwenyuyu/sylar/build",
   "command": "/usr/bin/clang++-11  -D__FILE__=\\\"tests/test_fiber.cc\\\" -I../.   -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g   -o CMakeFiles/test_fiber.dir/tests/test_fiber.cc.o -c /home/wenwenyuyu/sylar/tests/test_fiber.cc",
   "file": "/home/wenwenyuyu/sylar/tests/test_fiber.cc"
 },
@@ -81,6 +87,18 @@
   "directory": "/home/wenwenyuyu/sylar/build",
   "command": "/usr/bin/clang++-11  -Dsylar_EXPORTS -D__FILE__=\\\"sylar/fdmanager.cc\\\" -I../.   -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g -fPIC   -o CMakeFiles/sylar.dir/sylar/fdmanager.cc.o -c /home/wenwenyuyu/sylar/sylar/fdmanager.cc",
   "file": "/home/wenwenyuyu/sylar/sylar/fdmanager.cc"
+},
+
+{
+  "directory": "/home/wenwenyuyu/sylar/build",
+  "command": "/usr/bin/clang++-11  -Dsylar_EXPORTS -D__FILE__=\\\"sylar/address.cc\\\" -I../.   -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g -fPIC   -o CMakeFiles/sylar.dir/sylar/address.cc.o -c /home/wenwenyuyu/sylar/sylar/address.cc",
+  "file": "/home/wenwenyuyu/sylar/sylar/address.cc"
+},
+
+{
+  "directory": "/home/wenwenyuyu/sylar/build",
+  "command": "/usr/bin/clang++-11  -Dsylar_EXPORTS -D__FILE__=\\\"sylar/socket.cc\\\" -I../.   -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g -fPIC   -o CMakeFiles/sylar.dir/sylar/socket.cc.o -c /home/wenwenyuyu/sylar/sylar/socket.cc",
+  "file": "/home/wenwenyuyu/sylar/sylar/socket.cc"
 },
 
 {
