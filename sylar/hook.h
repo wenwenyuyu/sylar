@@ -2,9 +2,9 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-16 14:21:45
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-27 16:10:13
+ * @LastEditTime : 2024-05-12 20:22:56
  * @FilePath     : /sylar/hook.h
- * @Description  : 
+ * @Description  : hook函数，封装IO到epoll中，确保API为异步操作
  * Copyright 2024 OBKoro1, All Rights Reserved. 
  * 2024-04-16 14:21:45
  */
@@ -20,6 +20,11 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+/**
+ * @func: 
+ * @return {*}
+ * @description: 对IO操作进行hook，使得不具备异步功能的API具有异步功能
+ */
 namespace sylar {
 bool is_hook_enable();
 void set_hook_enable(bool flag);

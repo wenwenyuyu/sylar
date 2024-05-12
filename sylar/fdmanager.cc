@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-21 19:44:02
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-22 19:24:17
+ * @LastEditTime : 2024-05-12 20:21:52
  * @FilePath     : /sylar/fdmanager.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -26,7 +26,11 @@ FdCtx::FdCtx(int fd)
 }
 
 FdCtx::~FdCtx() {}
-
+/**
+ * @func: 
+ * @return {*}
+ * @description: 初始化函数，确保是socket、保证设置非阻塞
+ */
 bool FdCtx::init() {
   if (m_isInit) {
     return true;

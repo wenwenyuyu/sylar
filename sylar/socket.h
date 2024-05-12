@@ -2,9 +2,9 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-26 13:28:41
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-27 19:25:48
+ * @LastEditTime : 2024-05-12 21:07:35
  * @FilePath     : /sylar/socket.h
- * @Description  : 
+ * @Description  : socket封装
  * Copyright 2024 OBKoro1, All Rights Reserved. 
  * 2024-04-26 13:28:41
  */
@@ -41,7 +41,8 @@ public:
   Socket(const Socket &&) = delete;
   Socket operator=(const Socket &) = delete;
   Socket operator=(const Socket &&) = delete;
-  
+
+  // 获得类型、协议；并不初始化m_sock
   Socket(int family, int type, int protocol = 0);
   ~Socket();
 
@@ -60,7 +61,9 @@ public:
     return setOption(level, option, &result, sizeof(result));
   }
 
+  // 通过accept获得m_sock
   Socket::ptr accept();
+  // 根据fd初始化m_sock
   bool init(int sock);
   bool bind(const Address::ptr addr);
   bool connect(const Address::ptr addr, uint64_t timeout_ms = -1);
@@ -100,7 +103,9 @@ public:
   bool cancelAll();
 
 private:
+  // 新建完socket并进行初始化
   void initSock();
+  // 新建一个socket
   void newSock();
 private:
   int m_sock;
@@ -108,7 +113,9 @@ private:
   int m_type;
   int m_protocol;
   bool m_isConnected;
+  // 本地地址
   Address::ptr m_localAddress;
+  // 远端地址
   Address::ptr m_remoteAddress;
 };
 

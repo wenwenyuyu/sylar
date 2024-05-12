@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-08 15:06:06
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-10 20:33:41
+ * @LastEditTime : 2024-05-12 20:44:55
  * @FilePath     : /sylar/bytearray.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -349,6 +349,7 @@ void ByteArray::clear() {
   m_root->next = nullptr;
 }
 
+// 写入bytearray中
 void ByteArray::write(const void *buf, size_t size) {
   if (size == 0) {
     return;

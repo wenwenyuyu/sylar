@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-26 14:01:25
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-27 20:10:29
+ * @LastEditTime : 2024-05-12 21:06:03
  * @FilePath     : /sylar/socket.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -484,6 +484,7 @@ void Socket::initSock() {
   }
 }
 
+// 新建一个socket
 void Socket::newSock() {
     m_sock = socket(m_family, m_type, m_protocol);
     if(SYLAR_LIKELY(m_sock != -1)) {

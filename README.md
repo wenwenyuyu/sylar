@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2023-12-15 19:58:33
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-08 15:58:25
+ * @LastEditTime : 2024-05-12 20:55:40
  * @FilePath     : /README.md
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -906,10 +906,317 @@ private:
 };
 
 ```
+## Hook模块
+hook系统底层和socket相关的API，socket IO相关的API，以及sleep系列的API。hook的开启控制是线程粒度的，可以自由选择。通过hook模块，可以使一些不具异步功能的API，展现出异步的性能，如MySQL。
+
+hook的目的是在不重新编写代码的情况下，把老代码中的socket IO相关的API都转成异步，以提高性能。hook和IO协程调度是密切相关的，如果不使用IO协程调度器，那hook没有任何意义，考虑IOManager要在一个线程上按顺序调度以下协程：
+
+协程1：sleep(2) 睡眠两秒后返回。
+
+协程2：在scoket fd1 上send 100k数据。
+
+协程3：在socket fd2 上recv直到数据接收成功。
+
+在未hook的情况下，IOManager要调度上面的协程，流程是下面这样的：
+
+
+1. 调度协程1，协程阻塞在sleep上，等2秒后返回，这两秒内调度线程是被协程1占用的，其他协程无法在当前线程上调度。
+
+2. 调度协徎2，协程阻塞send 100k数据上，这个操作一般问题不大，因为send数据无论如何都要占用时间，但如果fd迟迟不可写，那send会阻塞直到套接字可写，同样，在阻塞期间，其他协程也无法在当前线程上调度。
+
+3. 调度协程3，协程阻塞在recv上，这个操作要直到recv超时或是有数据时才返回，期间调度器也无法调度其他协程。
+
+上面的调度流程最终总结起来就是，协程只能按顺序调度，一旦有一个协程阻塞住了，那整个调度线程也就阻塞住了，其他的协程都无法在当前线程上执行。像这种一条路走到黑的方式其实并不是完全不可避免，以sleep为例，调度器完全可以在检测到协程sleep后，将协程yield以让出执行权，同时设置一个定时器，2秒后再将协程重新resume。这样，调度器就可以在这2秒期间调度其他的任务，同时还可以顺利的实现sleep 2秒后再继续执行协程的效果，send/recv与此类似。在完全实现hook后，IOManager的执行流程将变成下面的方式：
+
+
+1. 调度协程1，检测到协程sleep，那么先添加一个2秒的定时器，定时器回调函数是在调度器上继续调度本协程，接着协程yield，等定时器超时。
+
+2. 因为上一步协程1已经yield了，所以协徎2并不需要等2秒后才可以执行，而是立刻可以执行。同样，调度器检测到协程send，由于不知道fd是不是马上可写，所以先在IOManager上给fd注册一个写事件，回调函数是让当前协程resume并执行实际的send操作，然后当前协程yield，等可写事件发生。
+
+3. 上一步协徎2也yield了，可以马上调度协程3。协程3与协程2类似，也是给fd注册一个读事件，回调函数是让当前协程resume并继续recv，然后本协程yield，等事件发生。
+
+4. 等2秒超时后，执行定时器回调函数，将协程1 resume以便继续执行。
+
+5. 等协程2的fd可写，一旦可写，调用写事件回调函数将协程2 resume以便继续执行send。
+
+6. 等协程3的fd可读，一旦可读，调用回调函数将协程3 resume以便继续执行recv。
+
+上面的4、5、6步都是异步的，调度线程并不会阻塞，IOManager仍然可以调度其他的任务，只在相关的事件发生后，再继续执行对应的任务即可。并且，由于hook的函数签名与原函数一样，所以对调用方也很方便，只需要以同步的方式编写代码，实现的效果却是异步执行的，效率很高。
+
+
+总而言之，在IO协程调度中对相关的系统调用进行hook，可以让调度线程尽可能得把时间片都花在有意义的操作上，而不是浪费在阻塞等待中。
+
+
+hook的重点是在替换API的底层实现的同时完全模拟其原本的行为，因为调用方是不知道hook的细节的，在调用被hook的API时，如果其行为与原本的行为不一致，就会给调用方造成困惑。比如，所有的socket fd在进行IO调度时都会被设置成NONBLOCK模式，如果用户未显式地对fd设置NONBLOCK，那就要处理好fcntl，不要对用户暴露fd已经是NONBLOCK的事实，这点也说明，除了IO相关的函数要进行hook外，对fcntl, setsockopt之类的功能函数也要进行hook，才能保证API的一致性。
+
+首先是socket fd上下文和FdManager的实现，这两个类用于记录fd上下文和保存全部的fd上下文，它们的关键实现如下
+
+```cpp
+
+/**
+ * @brief 文件句柄上下文类
+ * @details 管理文件句柄类型(是否socket)
+ *          是否阻塞,是否关闭,读/写超时时间
+ */
+class FdCtx : public std::enable_shared_from_this<FdCtx> {
+public:
+    typedef std::shared_ptr<FdCtx> ptr;
+    /**
+     * @brief 通过文件句柄构造FdCtx
+     */
+    FdCtx(int fd);
+    /**
+     * @brief 析构函数
+     */
+    ~FdCtx();
+    ....
+private:
+    /// 是否初始化
+    bool m_isInit: 1;
+    /// 是否socket
+    bool m_isSocket: 1;
+    /// 是否hook非阻塞
+    bool m_sysNonblock: 1;
+    /// 是否用户主动设置非阻塞
+    bool m_userNonblock: 1;
+    /// 是否关闭
+    bool m_isClosed: 1;
+    /// 文件句柄
+    int m_fd;
+    /// 读超时时间毫秒
+    uint64_t m_recvTimeout;
+    /// 写超时时间毫秒
+    uint64_t m_sendTimeout;
+};
+ 
+/**
+ * @brief 文件句柄管理类
+ */
+class FdManager {
+public:
+    typedef RWMutex RWMutexType;
+    /**
+     * @brief 无参构造函数
+     */
+    FdManager();
+ 
+    /**
+     * @brief 获取/创建文件句柄类FdCtx
+     * @param[in] fd 文件句柄
+     * @param[in] auto_create 是否自动创建
+     * @return 返回对应文件句柄类FdCtx::ptr
+     */
+    FdCtx::ptr get(int fd, bool auto_create = false);
+ 
+    /**
+     * @brief 删除文件句柄类
+     * @param[in] fd 文件句柄
+     */
+    void del(int fd);
+private:
+    /// 读写锁
+    RWMutexType m_mutex;
+    /// 文件句柄集合
+    std::vector<FdCtx::ptr> m_datas;
+};
+ 
+/// 文件句柄单例
+typedef Singleton<FdManager> FdMgr;
+```
+FdCtx类在用户态记录了fd的读写超时和非阻塞信息，其中非阻塞包括用户显式设置的非阻塞和hook内部设置的非阻塞，区分这两种非阻塞可以有效应对用户对fd设置/获取NONBLOCK模式的情形。
+
+另外注意一点，FdManager类对FdCtx的寻址采用了和IOManager中对FdContext的寻址一样的寻址方式，直接用fd作为数组下标进行寻址。
+
+
+
+接下来是hook的整体实现。首先定义线程局部变量t_hook_enable，用于表示当前线程是否启用hook，使用线程局部变量表示hook模块是线程粒度的，各个线程可单独启用或关闭hook。然后是获取各个被hook的接口的原始地址， 这里要借助dlsym来获取。sylar使用了一套宏来简化编码，这套宏的实现如下：
+```cpp
+#define HOOK_FUN(XX) \
+    XX(sleep) \
+    XX(usleep) \
+    XX(nanosleep) \
+    XX(socket) \
+    XX(connect) \
+    XX(accept) \
+    XX(read) \
+    XX(readv) \
+    XX(recv) \
+    XX(recvfrom) \
+    XX(recvmsg) \
+    XX(write) \
+    XX(writev) \
+    XX(send) \
+    XX(sendto) \
+    XX(sendmsg) \
+    XX(close) \
+    XX(fcntl) \
+    XX(ioctl) \
+    XX(getsockopt) \
+    XX(setsockopt)
+ 
+extern "C" {
+#define XX(name) name ## _fun name ## _f = nullptr;
+    HOOK_FUN(XX);
+#undef XX
+}
+ 
+void hook_init() {
+    static bool is_inited = false;
+    if(is_inited) {
+        return;
+    }
+#define XX(name) name ## _f = (name ## _fun)dlsym(RTLD_NEXT, #name);
+    HOOK_FUN(XX);
+#undef XX
+}
+```
+
+最关键的do_io模板,基础的IO操作都使用该hook模板
+```cpp
+template <typename OriginFun, typename... Args>
+static ssize_t do_io(int fd, OriginFun fun, const char *hook_fun_name,
+                     uint32_t event, int timeout_so, Args &&...args) {
+  // 如果没有进行hook，则直接返回
+  if (!sylar::t_hook_enable) {
+    return fun(fd, std::forward<Args&&>(args)...);
+  }
+
+  // 获取相应的fd
+  sylar::FdCtx::ptr ctx = sylar::FdMgr::getInstance()->get(fd);
+  if (!ctx) {
+    return fun(fd, std::forward<Args&&>(args)...);
+  }
+
+  if (ctx->isClose()) {
+    errno = EBADF;
+    return -1;
+  }
+
+  // 判断是否为套接字或者被显示设置了非阻塞模式
+  if (!ctx->isSocket() || ctx->getUserNonblock()) {
+    return fun(fd, std::forward<Args&&>(args)...);
+  }
+
+  // 获得超时时间
+  uint64_t to = ctx->getTimeout(timeout_so);
+  std::shared_ptr<timer_info> tinfo(new timer_info);
+
+retry:
+  // 执行，因为是非阻塞模式，会立刻返回
+  ssize_t n = fun(fd, std::forward<Args &&>(args)...);
+  // 如果是被中断的
+  while (n == -1 && errno == EINTR) {
+    n = fun(fd, std::forward<Args&&>(args)...);
+  }
+
+  // 如果不可行则进行调度 
+  if (n == -1 && errno == EAGAIN) {
+    sylar::IOManager *iom = sylar::IOManager::GetThis();
+    sylar::Timer::ptr timer;
+    std::weak_ptr<timer_info> winfo(tinfo);
+
+    // 如果设置了超时时间
+    if (to != (uint64_t)-1) {
+      // 设置条件定时器
+      timer = iom->addConditionTimer(to, [winfo, fd, iom, event] {
+        auto t = winfo.lock();
+        // 如果已经执行过了，直接返回
+        if (!t || t->cancelled) {
+          return;
+        }
+        // 取消事件
+        t->cancelled = ETIMEDOUT;
+        iom->cancelEvent(fd, (sylar::IOManager::Event)event);
+      }, winfo);
+    }
+
+    // 加入事件
+    int rt = iom->addEvent(fd, (sylar::IOManager::Event)event);
+    if (rt) {
+      SYLAR_LOG_ERROR(sylar::g_logger)
+          << hook_fun_name << " addEvent(" << fd << ", " << event << ")";
+      if(timer) {
+          timer->cancel();
+      }
+      return -1;
+    } else {
+      SYLAR_LOG_INFO(sylar::g_logger) << hook_fun_name << " trigger";
+      // 重中之重 yield出去
+      sylar::Fiber::wait();
+      // 返回
+      if (timer) {
+        timer->cancel();
+      }
+
+      if (tinfo->cancelled) {
+        errno = tinfo->cancelled;
+        return -1;
+      }
+
+      goto retry;
+    }
+  }
+
+  return n;
+}
+
+```
+
 ## socket函数库
 
+### Address模块
+提供网络地址相关的类，支持与网络地址相关的操作，一共有以下几个类：
+
+Address：所有网络地址的基类，抽象类，对应sockaddr类型，但只包含抽象方法，不包含具体的成员。除此外，Address作为地址类还提供了网络地址查询及网卡地址查询功能。
+
+IPAddress：IP地址的基类，抽象类，在Address基础上，增加了IP地址相关的端口以及子网掩码、广播地址、网段地址操作，同样是只包含抽象方法，不包含具体的成员。
+
+IPv4Address：IPv4地址类，实体类，表示一个IPv4地址，对应sockaddr_in类型，包含一个sockaddr_in成员，可以操作该成员的网络地址和端口，以及获取子码掩码等操作。
+
+IPv6Address：IPv6地址类，实体类，与IPv4Address类似，表示一个IPv6地址，对应sockaddr_in6类型，包含一个sockaddr_in6成员。
+
+UnixAddreess：Unix域套接字类，对应sockaddr_un类型，同上。
+
+UnknownAddress：表示一个未知类型的套接字地址，实体类，对应sockaddr类型，这个类型与Address类型的区别是它包含一个sockaddr成员，并且是一个实体类。
+
+### Socket模块
+套接字类，表示一个套接字对象。
+
+对于套接字类，需要关注以下属性：
+
+1. 文件描述符
+2. 地址类型（AF_INET, AF_INET6等）
+3. 套接字类型（SOCK_STREAM, SOCK_DGRAM等）
+4. 协议类型（这项其实可以忽略）
+5. 是否连接（针对TCP套接字，如果是UDP套接字，则默认已连接）
+6. 本地地址和对端的地址
+
+套接字类应提供以下方法：
+
+1. 创建各种类型的套接字对象的方法（TCP套接字，UDP套接字，Unix域套接字）
+2. 设置套接字选项，比如超时参数
+3. bind/connect/listen方法，实现绑定地址、发起连接、发起监听功能 
+4. accept方法，返回连入的套接字对象
+5. 发送、接收数据的方法
+6. 获取本地地址、远端地址的方法
+7. 获取套接字类型、地址类型、协议类型的方法
+8. 取消套接字读、写的方法
+
+## ByteArray
+字节数组容器，提供基础类型的序列化与反序列化功能。
+
+ByteArray的底层存储是固定大小的块，以链表形式组织。每次写入数据时，将数据写入到链表最后一个块中，如果最后一个块不足以容纳数据，则分配一个新的块并添加到链表结尾，再写入数据。ByteArray会记录当前的操作位置，每次写入数据时，该操作位置按写入大小往后偏移，如果要读取数据，则必须调用setPosition重新设置当前的操作位置。
+
+ByteArray支持基础类型的序列化与反序列化功能，并且支持将序列化的结果写入文件，以及从文件中读取内容进行反序列化。ByteArray支持以下类型的序列化与反序列化：
+
+1. 固定长度的有符号/无符号8位、16位、32位、64位整数
+2. 不固定长度的有符号/无符号32位、64位整数
+3. float、double类型
+4. 字符串，包含字符串长度，长度范围支持16位、32位、64位。
+5. 字符串，不包含长度。
+
+以上所有的类型都支持读写。
+
+ByteArray还支持设置序列化时的大小端顺序。
 ## http协议开发
 
-## 分布协议
-
-## 推荐系统

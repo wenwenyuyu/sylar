@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-16 14:26:28
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-23 15:49:45
+ * @LastEditTime : 2024-05-12 20:17:34
  * @FilePath     : /sylar/hook.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -36,9 +36,11 @@
 namespace sylar {
 
 static sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
+// 连接延时配置
 static sylar::ConfigVar<int>::ptr g_tcp_connect_timeout =
     sylar::Config::Lookup("tcp.connect.timeout", 5000, "tcp connect timeout");
 
+// 是否进行hook?
 static thread_local bool t_hook_enable = false;
 
 #define HOOK_FUN(XX)                                                           \
@@ -64,17 +66,19 @@ static thread_local bool t_hook_enable = false;
   XX(getsockopt)                                                               \
   XX(setsockopt)
 
-
+// hook函数初始化
 void hook_init() {
   static bool is_inited = false;
   if (is_inited) {
     return;
   }
+// 对函数进行hook
 #define XX(name) name##_f = (name##_fun)dlsym(RTLD_NEXT, #name);
   HOOK_FUN(XX);
 #undef XX
 }
 
+// 设置连接超时，-1表示不超时
 static uint64_t s_connect_timeout = -1;
 struct _HookIniter {
   _HookIniter() {
@@ -90,25 +94,30 @@ struct _HookIniter {
   }
 };
 
+// 静态初始化，确保在main函数之前初始化
 static _HookIniter s_hook_init;
-
+// 是否设置hook
 bool is_hook_enable() { return t_hook_enable; }
-
+// 设置hook
 void set_hook_enable(bool flag) { t_hook_enable = flag; }
 
 } // namespace sylar
 
+// 条件定时器的条件
 struct timer_info {
   int cancelled = 0;
 };
 
+// io操作的hook
 template <typename OriginFun, typename... Args>
 static ssize_t do_io(int fd, OriginFun fun, const char *hook_fun_name,
-                       uint32_t event, int timeout_so, Args &&...args) {
+                     uint32_t event, int timeout_so, Args &&...args) {
+  // 如果没有进行hook，则直接返回
   if (!sylar::t_hook_enable) {
     return fun(fd, std::forward<Args&&>(args)...);
   }
 
+  // 获取相应的fd
   sylar::FdCtx::ptr ctx = sylar::FdMgr::getInstance()->get(fd);
   if (!ctx) {
     return fun(fd, std::forward<Args&&>(args)...);
@@ -119,35 +128,45 @@ static ssize_t do_io(int fd, OriginFun fun, const char *hook_fun_name,
     return -1;
   }
 
+  // 判断是否为套接字或者被显示设置了非阻塞模式
   if (!ctx->isSocket() || ctx->getUserNonblock()) {
     return fun(fd, std::forward<Args&&>(args)...);
   }
 
+  // 获得超时时间
   uint64_t to = ctx->getTimeout(timeout_so);
   std::shared_ptr<timer_info> tinfo(new timer_info);
 
 retry:
+  // 执行，因为是非阻塞模式，会立刻返回
   ssize_t n = fun(fd, std::forward<Args &&>(args)...);
+  // 如果是被中断的
   while (n == -1 && errno == EINTR) {
     n = fun(fd, std::forward<Args&&>(args)...);
   }
 
+  // 如果不可行则进行调度 
   if (n == -1 && errno == EAGAIN) {
     sylar::IOManager *iom = sylar::IOManager::GetThis();
     sylar::Timer::ptr timer;
     std::weak_ptr<timer_info> winfo(tinfo);
 
+    // 如果设置了超时时间
     if (to != (uint64_t)-1) {
+      // 设置条件定时器
       timer = iom->addConditionTimer(to, [winfo, fd, iom, event] {
         auto t = winfo.lock();
+        // 如果已经执行过了，直接返回
         if (!t || t->cancelled) {
           return;
         }
+        // 取消事件
         t->cancelled = ETIMEDOUT;
         iom->cancelEvent(fd, (sylar::IOManager::Event)event);
       }, winfo);
     }
 
+    // 加入事件
     int rt = iom->addEvent(fd, (sylar::IOManager::Event)event);
     if (rt) {
       SYLAR_LOG_ERROR(sylar::g_logger)
@@ -158,7 +177,9 @@ retry:
       return -1;
     } else {
       SYLAR_LOG_INFO(sylar::g_logger) << hook_fun_name << " trigger";
+      // 重中之重 yield出去
       sylar::Fiber::wait();
+      // 返回
       if (timer) {
         timer->cancel();
       }
@@ -179,7 +200,7 @@ extern "C" {
   HOOK_FUN(XX);
 #undef XX
 
-
+// 直接加入定时器中
 unsigned int sleep(unsigned int seconds) {
 
   if (!sylar::t_hook_enable) {
@@ -229,6 +250,7 @@ int nanosleep(const struct timespec *req, struct timespec *rem) {
   return 0;
 }
 
+// hook的fd还要加入fdmgr中
 int socket(int domain, int type, int protocol) {
   if (!sylar::t_hook_enable) {
     return socket_f(domain, type, protocol);
@@ -242,6 +264,7 @@ int socket(int domain, int type, int protocol) {
   return fd;
 }
 
+// 和do_io一样
 int connect_with_timeout(int sockfd, const struct sockaddr *addr, socklen_t addrlen, uint64_t timeout_ms) {
   if (!sylar::t_hook_enable) {
     return connect_f(sockfd, addr, addrlen);
@@ -382,6 +405,7 @@ ssize_t sendmsg(int s, const struct msghdr *msg, int flags) {
                msg, flags);
 }
 
+// 还要取消fd
 int close(int fd) {
   if (!sylar::t_hook_enable) {
     return close_f(fd);
@@ -396,7 +420,9 @@ int close(int fd) {
   }
   return close_f(fd);
 }
-
+// fcntl，这里的O_NONBLOCK标志要特殊处理
+// 因为所有参与协程调度的fd都会被设置成非阻塞模式
+// 所以要在应用层维护好用户设置的非阻塞标志。
 int fcntl(int fd, int cmd, ... /* arg */) {
   va_list va;
   va_start(va, cmd);
@@ -482,6 +508,7 @@ int fcntl(int fd, int cmd, ... /* arg */) {
   }
 }
 
+// ioctl，同样要特殊处理FIONBIO命令，这个命令用于设置非阻塞，处理方式和上面的fcntl一样。
 int ioctl(int d, unsigned long int request, ...) {
   va_list va;
   va_start(va, request);
@@ -504,6 +531,8 @@ int getsockopt(int sockfd, int level, int optname, void *optval,
   return getsockopt_f(sockfd, level, optname, optval, optlen);
 }
 
+// setsocketopt，这里要特殊处理SO_RECVTIMEO和SO_SNDTIMEO
+// 在应用层记录套接字的读写超时，方便协程调度器获取。
 int setsockopt(int sockfd, int level, int optname, const void *optval,
                socklen_t optlen) {
   if (!sylar::t_hook_enable) {

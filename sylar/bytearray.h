@@ -2,9 +2,9 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-08 14:34:28
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-10 20:34:58
+ * @LastEditTime : 2024-05-12 20:43:31
  * @FilePath     : /sylar/bytearray.h
- * @Description  : 
+ * @Description  : 支持序列化和反序列化
  * Copyright 2024 OBKoro1, All Rights Reserved. 
  * 2024-05-08 14:34:28
  */
@@ -36,6 +36,7 @@ public:
   ByteArray(std::size_t base_size = 4096);
   ~ByteArray();
 
+  // 写入bytearray中
   void writeFint8(int8_t value);
   void writeFuint8(uint8_t value);
   void writeFint16(int16_t value);
@@ -44,7 +45,7 @@ public:
   void writeFuint32(uint32_t value);
   void writeFint64(int64_t value);
   void writeFuint64(uint64_t value);
-
+  // 通过压缩算法写入bytearray中
   void writeInt32(int32_t value);
   void writeUint32(uint32_t value);
   void writeInt64(int64_t value);
@@ -58,6 +59,7 @@ public:
   void writeStringVint(const std::string &value);
   void writeStringWithoutLength(const std::string &value);
 
+  // 在bytearray中读取
   int8_t readFint8();
   uint8_t readFuint8();
   int16_t readFint16();

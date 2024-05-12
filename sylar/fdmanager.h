@@ -2,9 +2,9 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-21 19:21:42
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-21 20:32:36
+ * @LastEditTime : 2024-05-12 20:22:35
  * @FilePath     : /sylar/fdmanager.h
- * @Description  : 
+ * @Description  : 为了保存被hoo fd的集合
  * Copyright 2024 OBKoro1, All Rights Reserved. 
  * 2024-04-21 19:21:42
  */
@@ -39,15 +39,23 @@ public:
 
   void setTimeout(int type, uint64_t v);
   uint64_t getTimeout(int type);
-  
+
 private:
+  // 是否初始化
   bool m_isInit : 1;
+  // 是否是socket
   bool m_isSocket : 1;
+  // 是否hook非阻塞
   bool m_sysNonblock : 1;
+  // 是否用户主动设置非阻塞
   bool m_userNonblock : 1;
+  // 是否关闭
   bool m_isClosed : 1;
+  // 文件句柄
   int m_fd;
+  // 读超时时间
   uint64_t m_recvTimeout;
+  // 写超时时间
   uint64_t m_sendTimeout;
 };
 
@@ -59,11 +67,15 @@ public:
 
   FdCtx::ptr get(int fd, bool auto_create = false);
   void del(int fd);
+
 private:
+  // 读写锁
   RWMutexType m_mutex;
+  // 文件句柄合集
   std::vector<FdCtx::ptr> m_datas;
 };
 
+// 文件句柄管理单例模式
 typedef Singleton<FdManager> FdMgr;
 }
 

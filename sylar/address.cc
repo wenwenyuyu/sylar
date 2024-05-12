@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-24 14:47:00
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-27 19:34:55
+ * @LastEditTime : 2024-05-12 20:36:49
  * @FilePath     : /sylar/address.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -94,6 +94,7 @@ bool Address::Lookup(std::vector<Address::ptr> &result, const std::string &host,
     node = host;
   }
 
+  // 获得ip信息
   int error = getaddrinfo(node.c_str(), service, &hints, &results);
   if (error) {
     SYLAR_LOG_DEBUG(g_logger)
@@ -121,6 +122,7 @@ Address::ptr Address::LookupAny(const std::string &host, int family, int type,
   return nullptr;
 }
 
+// 转为IPv4
 std::shared_ptr<IPAddress> Address::LookupAnyIPAddress(const std::string &host, int family, int type,
                                 int protocol) {
   std::vector<Address::ptr> result;
@@ -207,6 +209,7 @@ bool Address::GetInterfaceAddress(
     return false;
   }
 
+  // 获得目标iface的信息
   auto its = results.equal_range(iface);
   for (; its.first != its.second; ++its.first) {
     result.push_back(its.first->second);
@@ -269,6 +272,7 @@ bool Address::operator!=(const Address &rhs) const {
   return !(*this == rhs);
 }
 
+// 获取字符串信息，并转为Address
 IPAddress::ptr IPAddress::Create(const char *address, uint16_t port) {
   struct addrinfo hints, *res;
   memset(&hints, 0, sizeof(hints));
