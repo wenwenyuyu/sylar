@@ -1,8 +1,9 @@
+/home/wenwenyuyu/sylar/build/CMakeFiles/rebuild_cache.dir
+/home/wenwenyuyu/sylar/build/CMakeFiles/edit_cache.dir
+/home/wenwenyuyu/sylar/build/CMakeFiles/test_http_parser.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_hook.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_thread.dir
-/home/wenwenyuyu/sylar/build/CMakeFiles/rebuild_cache.dir
-/home/wenwenyuyu/sylar/build/CMakeFiles/edit_cache.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_config.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_bytearray.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/sylar.dir
@@ -12,3 +13,4 @@
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_scheduler.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_iomanager.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_socket.dir
+/home/wenwenyuyu/sylar/build/CMakeFiles/test_http.dir

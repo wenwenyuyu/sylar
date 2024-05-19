@@ -59,6 +59,30 @@ CMakeFiles/sylar.dir/sylar/hook.cc.o
  ../sylar/util.h
  /home/wenwenyuyu/sylar/sylar/hook.cc
  /home/wenwenyuyu/sylar/sylar/hook.h
+CMakeFiles/sylar.dir/sylar/http/http.cc.o
+ /home/wenwenyuyu/sylar/sylar/http/http.cc
+ /home/wenwenyuyu/sylar/sylar/http/http.h
+CMakeFiles/sylar.dir/sylar/http/http11_parser.rl.cc.o
+ /home/wenwenyuyu/sylar/sylar/http/http11_common.h
+ /home/wenwenyuyu/sylar/sylar/http/http11_parser.h
+ /home/wenwenyuyu/sylar/sylar/http/http11_parser.rl.cc
+CMakeFiles/sylar.dir/sylar/http/http_parser.cc.o
+ ../sylar/config.h
+ ../sylar/http/http.h
+ ../sylar/http/http11_common.h
+ ../sylar/http/http11_parser.h
+ ../sylar/http/httpclient_parser.h
+ ../sylar/log.h
+ ../sylar/mutex.h
+ ../sylar/singleton.h
+ ../sylar/thread.h
+ ../sylar/util.h
+ /home/wenwenyuyu/sylar/sylar/http/http_parser.cc
+ /home/wenwenyuyu/sylar/sylar/http/http_parser.h
+CMakeFiles/sylar.dir/sylar/http/httpclient_parser.rl.cc.o
+ /home/wenwenyuyu/sylar/sylar/http/http11_common.h
+ /home/wenwenyuyu/sylar/sylar/http/httpclient_parser.h
+ /home/wenwenyuyu/sylar/sylar/http/httpclient_parser.rl.cc
 CMakeFiles/sylar.dir/sylar/iomanager.cc.o
  ../sylar/fiber.h
  ../sylar/log.h
