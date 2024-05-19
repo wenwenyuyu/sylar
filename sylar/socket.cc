@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-26 14:01:25
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-12 21:06:03
+ * @LastEditTime : 2024-05-19 15:20:27
  * @FilePath     : /sylar/socket.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -494,6 +494,10 @@ void Socket::newSock() {
             << ", " << m_type << ", " << m_protocol << ") errno="
             << errno << " errstr=" << strerror(errno);
     }
+}
+
+std::ostream &operator<<(std::ostream &os, const Socket &sock) {
+  return sock.dump(os);
 }
 
 } 

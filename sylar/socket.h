@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-26 13:28:41
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-12 21:07:35
+ * @LastEditTime : 2024-05-19 15:20:00
  * @FilePath     : /sylar/socket.h
  * @Description  : socket封装
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -118,6 +118,8 @@ private:
   // 远端地址
   Address::ptr m_remoteAddress;
 };
+
+std::ostream &operator<<(std::ostream &os, const Socket &sock);
 
 }
 #endif

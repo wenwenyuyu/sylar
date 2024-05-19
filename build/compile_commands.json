@@ -127,6 +127,12 @@
 
 {
   "directory": "/home/wenwenyuyu/sylar/build",
+  "command": "/usr/bin/clang++-11  -Dsylar_EXPORTS -D__FILE__=\\\"sylar/tcp_server.cc\\\" -I../.   -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g -fPIC   -o CMakeFiles/sylar.dir/sylar/tcp_server.cc.o -c /home/wenwenyuyu/sylar/sylar/tcp_server.cc",
+  "file": "/home/wenwenyuyu/sylar/sylar/tcp_server.cc"
+},
+
+{
+  "directory": "/home/wenwenyuyu/sylar/build",
   "command": "/usr/bin/clang++-11  -Dsylar_EXPORTS -D__FILE__=\\\"sylar/config.cc\\\" -I../.   -lpthread -rdynamic -O0 -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -g -fPIC   -o CMakeFiles/sylar.dir/sylar/config.cc.o -c /home/wenwenyuyu/sylar/sylar/config.cc",
   "file": "/home/wenwenyuyu/sylar/sylar/config.cc"
 },

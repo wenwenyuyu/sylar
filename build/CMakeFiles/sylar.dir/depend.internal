@@ -133,6 +133,21 @@ CMakeFiles/sylar.dir/sylar/socket.cc.o
  /home/wenwenyuyu/sylar/sylar/socket.cc
  /home/wenwenyuyu/sylar/sylar/socket.h
  /home/wenwenyuyu/sylar/sylar/util.h
+CMakeFiles/sylar.dir/sylar/tcp_server.cc.o
+ ../sylar/address.h
+ ../sylar/config.h
+ ../sylar/fiber.h
+ ../sylar/iomanager.h
+ ../sylar/log.h
+ ../sylar/mutex.h
+ ../sylar/scheduler.h
+ ../sylar/singleton.h
+ ../sylar/socket.h
+ ../sylar/thread.h
+ ../sylar/timer.h
+ ../sylar/util.h
+ /home/wenwenyuyu/sylar/sylar/tcp_server.cc
+ /home/wenwenyuyu/sylar/sylar/tcp_server.h
 CMakeFiles/sylar.dir/sylar/thread.cc.o
  ../sylar/log.h
  ../sylar/mutex.h

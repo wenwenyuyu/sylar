@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-16 14:26:28
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-12 20:17:34
+ * @LastEditTime : 2024-05-19 19:35:57
  * @FilePath     : /sylar/hook.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -167,6 +167,7 @@ retry:
     }
 
     // 加入事件
+    SYLAR_LOG_INFO(sylar::g_logger) << hook_fun_name << " addEvent";
     int rt = iom->addEvent(fd, (sylar::IOManager::Event)event);
     if (rt) {
       SYLAR_LOG_ERROR(sylar::g_logger)

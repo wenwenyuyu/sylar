@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-24 14:47:00
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-12 20:36:49
+ * @LastEditTime : 2024-05-19 15:40:19
  * @FilePath     : /sylar/address.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -244,7 +244,7 @@ int Address::getFamily() const {
   return getAddr()->sa_family;
 }
 
-std::string Address::toString() {
+std::string Address::toString() const {
   std::stringstream ss;
   insert(ss);
   return ss.str();
@@ -557,6 +557,10 @@ socklen_t UnknownAddress::getAddrLen() const {
 std::ostream &UnknownAddress::insert(std::ostream &os) const {
   os << "UnknownAddress family=" << m_addr.sa_data;
   return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const Address &addr) {
+  return addr.insert(os);
 }
 
 }

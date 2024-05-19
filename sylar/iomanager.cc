@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-01 16:42:01
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-27 19:51:36
+ * @LastEditTime : 2024-05-19 19:10:25
  * @FilePath     : /sylar/iomanager.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -33,6 +33,7 @@ static Logger::ptr g_logger = SYLAR_LOG_NAME("system");
  */
 IOManager::FdContext::EventContext &
 IOManager::FdContext::getContext(Event event) {
+  SYLAR_LOG_INFO(g_logger) << "IOManager::FdContext::getContext";
   switch (event) {
   case IOManager::READ:
     return read;
@@ -51,6 +52,7 @@ IOManager::FdContext::getContext(Event event) {
  * @description: 重置事件上下文
  */
 void IOManager::FdContext::resetContext(EventContext &ctx) {
+  SYLAR_LOG_INFO(g_logger) << "IOManager::FdContext::resetContext";
   ctx.scheduler = nullptr;
   ctx.fiber.reset();
   ctx.cb = nullptr;
@@ -63,6 +65,7 @@ void IOManager::FdContext::resetContext(EventContext &ctx) {
  * @description: 将读写事件的cb或fiber放入全局任务队列中
  */
 void IOManager::FdContext::triggerEvent(Event event) {
+  SYLAR_LOG_INFO(g_logger) << "IOManager::FdContext::triggerEvent";
   SYLAR_ASSERT(events & event);
   events = (Event)(events & ~event);
 
@@ -88,6 +91,7 @@ void IOManager::FdContext::triggerEvent(Event event) {
 IOManager::IOManager(std::size_t threads, bool use_caller,
                      const std::string &name)
     : Scheduler(threads, use_caller, name) {
+  SYLAR_LOG_INFO(g_logger) << "IOManager::IOManager";
   m_epfd = epoll_create(5000);
   SYLAR_ASSERT(m_epfd > 0);
 
@@ -156,6 +160,7 @@ void IOManager::contextResize(std::size_t size) {
  */
 int IOManager::addEvent(int fd, Event event, std::function<void()> cb) {
   // 在全局fd列表中获得相应的FdContext
+  SYLAR_LOG_INFO(g_logger) << "IOManager::addEvent";
   FdContext *fd_ctx = nullptr;
   RWMutexType::ReadLock lock(m_mutex);
   if ((int)m_fdContexts.size() > fd) {
@@ -216,6 +221,7 @@ int IOManager::addEvent(int fd, Event event, std::function<void()> cb) {
  * @description: 把fd中某个事件删除
  */
 bool IOManager::delEvent(int fd, Event event) {
+  SYLAR_LOG_INFO(g_logger) << "IOManager::delEvent";
   // 获得FdContext
   RWMutexType::ReadLock lock(m_mutex);
   if ((int)m_fdContexts.size() <= fd) {
@@ -261,6 +267,7 @@ bool IOManager::delEvent(int fd, Event event) {
  * @description: 触发并取消事件
  */
 bool IOManager::cancelEvent(int fd, Event event) {
+  SYLAR_LOG_INFO(g_logger) << "IOManager::cancelEvent";
   RWMutexType::ReadLock lock(m_mutex);
   if ((int)m_fdContexts.size() <= fd) {
     return false;
@@ -302,6 +309,7 @@ bool IOManager::cancelEvent(int fd, Event event) {
  * @description: 触发并取消所有事件
  */
 bool IOManager::cancelAll(int fd) {
+  SYLAR_LOG_INFO(g_logger) << "IOManager::cancelAll";
   RWMutexType::ReadLock lock(m_mutex);
   if ((int)m_fdContexts.size() <= fd) {
     return false;
@@ -406,7 +414,7 @@ void IOManager::idle() {
       } else {
         next_timeout = MAX_TIMEOUT;
       }
-      //SYLAR_LOG_INFO(g_logger) << "epoll wait next_timeout = " << next_timeout;
+      SYLAR_LOG_INFO(g_logger) << "epoll wait next_timeout = " << next_timeout;
       rt = epoll_wait(m_epfd, events, 64, (int)next_timeout);
 
       if (rt < 0 && errno == EINTR) {

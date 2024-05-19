@@ -1,5 +1,7 @@
 /home/wenwenyuyu/sylar/build/CMakeFiles/rebuild_cache.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/edit_cache.dir
+/home/wenwenyuyu/sylar/build/CMakeFiles/echo_server.dir
+/home/wenwenyuyu/sylar/build/CMakeFiles/test_tcp_server.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_http_parser.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_hook.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test.dir

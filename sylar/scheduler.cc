@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-03-21 10:15:45
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-16 15:21:58
+ * @LastEditTime : 2024-05-19 19:06:55
  * @FilePath     : /sylar/scheduler.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -37,6 +37,7 @@ static thread_local Fiber *t_scheduler_fiber = nullptr;
 Scheduler::Scheduler(std::size_t threads, bool use_caller,
                      const std::string &name)
     : m_name(name) {
+  SYLAR_LOG_INFO(g_logger) << "Scheduler::Scheduler";
   SYLAR_ASSERT(threads > 0);
 
   // 若要将调度器的线程纳入线程池
@@ -75,6 +76,7 @@ Scheduler::~Scheduler() {
  */
 void Scheduler::start() {
   MutexType::Lock lock(m_mutex);
+  SYLAR_LOG_INFO(g_logger) << "Scheduler::start";
   if (!m_stopping) {
     return;
   }
@@ -279,7 +281,7 @@ bool Scheduler::stopping() {
  */
 void Scheduler::idle() {
   while (!stopping()) {
-    //SYLAR_LOG_INFO(g_logger) << "idle fiber stuck, thread id = " << sylar::getThreadId() << " Fiber id = " << Fiber::GetId();
+    SYLAR_LOG_INFO(g_logger) << "idle fiber stuck, thread id = " << sylar::getThreadId() << " Fiber id = " << Fiber::GetId();
     Fiber::wait();
   }
 }

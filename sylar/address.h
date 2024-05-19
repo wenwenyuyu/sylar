@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-24 14:26:34
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-12 20:39:01
+ * @LastEditTime : 2024-05-19 15:40:07
  * @FilePath     : /sylar/address.h
  * @Description  : 对于地址的封装，以及网络字节序的考虑
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -61,7 +61,7 @@ public:
   virtual socklen_t getAddrLen() const = 0;
 
   virtual std::ostream &insert(std::ostream &os) const = 0;
-  std::string toString();
+  std::string toString() const;
 
   bool operator<(const Address &rhs) const;
   bool operator==(const Address &rhs) const;
@@ -157,6 +157,6 @@ public:
 private:
   sockaddr m_addr;
 };
-
+std::ostream &operator<<(std::ostream &os, const Address &addr);
 }
 #endif
