@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-03-21 10:15:45
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-19 19:06:55
+ * @LastEditTime : 2024-05-20 20:00:04
  * @FilePath     : /sylar/scheduler.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -147,7 +147,7 @@ void Scheduler::stop() {
  * @description: 通过std::bind传入this指针；线程在协程任务队列中取出任务运行
  */
 void Scheduler::run() {
-  SYLAR_LOG_INFO(g_logger) << "thread run , id = " << sylar::getThreadId();
+  SYLAR_LOG_INFO(g_logger) << "Schedule thread run , id = " << sylar::getThreadId();
   set_hook_enable(true);
   setThis();
 
@@ -175,6 +175,7 @@ void Scheduler::run() {
       while (it != m_fibers.end()) {
         if (it->m_threadId != -1 && it->m_threadId != sylar::getThreadId()) {
           ++it;
+          need_tickle = true;
           continue;
         }
 
@@ -185,10 +186,9 @@ void Scheduler::run() {
         }
 
         ft = *it;
-        m_fibers.erase(it);
+        m_fibers.erase(it++);
         ++m_activeThreadCount;
         is_active = true;
-        it++;
         break;
       }
       need_tickle |= it != m_fibers.end();      
@@ -200,8 +200,9 @@ void Scheduler::run() {
 
     if (ft.m_fiber && (ft.m_fiber->getState() != Fiber::TERM &&
                        ft.m_fiber->getState() != Fiber::EXCEPT)) {
-      // SYLAR_LOG_INFO(g_logger) << "fiber get";
-      ft.m_fiber->resume();
+      SYLAR_LOG_INFO(g_logger) << "task fiber get";
+      ft.m_fiber->swapIn();
+      SYLAR_LOG_INFO(g_logger) << "task fiber finish";
       --m_activeThreadCount;
 
       if (ft.m_fiber->getState() == Fiber::READY) {
@@ -219,7 +220,7 @@ void Scheduler::run() {
         cb_fiber.reset(new Fiber(ft.m_cb));
       }
       ft.reset();
-      cb_fiber->resume();
+      cb_fiber->swapIn();
       --m_activeThreadCount;
 
       if (cb_fiber->getState() == Fiber::READY) {
@@ -246,7 +247,7 @@ void Scheduler::run() {
       }
 
       ++m_idleThreadCount;
-      idle_fiber->resume();
+      idle_fiber->swapIn();
       --m_idleThreadCount;
       if (idle_fiber->getState() != Fiber::EXCEPT &&
           idle_fiber->getState() != Fiber::TERM) {
@@ -281,8 +282,8 @@ bool Scheduler::stopping() {
  */
 void Scheduler::idle() {
   while (!stopping()) {
-    SYLAR_LOG_INFO(g_logger) << "idle fiber stuck, thread id = " << sylar::getThreadId() << " Fiber id = " << Fiber::GetId();
-    Fiber::wait();
+    SYLAR_LOG_INFO(g_logger) << "idle fiber stuck, thread id = " << sylar::getThreadId() << " Fiber id = " << Fiber::GetFiberId();
+    Fiber::YieldToHold();
   }
 }
 

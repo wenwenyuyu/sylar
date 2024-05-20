@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-13 15:51:36
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-15 15:12:17
+ * @LastEditTime : 2024-05-20 15:19:04
  * @FilePath     : /sylar/http/http.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -211,5 +211,14 @@ std::string HttpResponse::toString() const {
   dump(ss);
   return ss.str();
 }
+
+std::ostream &operator<<(std::ostream &os, const HttpRequest &req) {
+  return req.dump(os);
+}
+
+std::ostream &operator<<(std::ostream &os, const HttpResponse &rsp) {
+  return rsp.dump(os);
+}
+
 }
 }

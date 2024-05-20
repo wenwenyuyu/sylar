@@ -11,6 +11,7 @@
 /home/wenwenyuyu/sylar/build/CMakeFiles/sylar.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_util.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_fiber.dir
+/home/wenwenyuyu/sylar/build/CMakeFiles/test_http_server.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_address.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_scheduler.dir
 /home/wenwenyuyu/sylar/build/CMakeFiles/test_iomanager.dir

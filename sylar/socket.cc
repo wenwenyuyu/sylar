@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-26 14:01:25
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-19 15:20:27
+ * @LastEditTime : 2024-05-20 19:25:01
  * @FilePath     : /sylar/socket.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -140,13 +140,16 @@ bool Socket::setOption(int level, int option, const void *result, size_t len) {
 
 Socket::ptr Socket::accept() {
   Socket::ptr sock(new Socket(m_family, m_type, m_protocol));
+  SYLAR_LOG_INFO(g_logger) << "Socket accept";
   int newsock = ::accept(m_sock, nullptr, nullptr);
+  SYLAR_LOG_INFO(g_logger) << "Socket accept success";
   if (newsock == -1) {
     SYLAR_LOG_ERROR(g_logger) << "accept(" << m_sock << ") errno=" << errno
                               << " errstr=" << strerror(errno);
     return nullptr;
   }
   if (sock->init(newsock)) {
+    SYLAR_LOG_INFO(g_logger) << "Socket accept and init success";
     return sock;
   }
   return nullptr;
@@ -248,11 +251,12 @@ bool Socket::listen(int backlog) {
 }
 
 bool Socket::close() {
-  if (!m_isConnected && m_sock == -1) {
-    return true;
+  if(!m_isConnected && m_sock == -1) {
+      return true;
   }
   m_isConnected = false;
   if (m_sock != -1) {
+    SYLAR_LOG_INFO(g_logger) << "socket::close";
     ::close(m_sock);
     m_sock = -1;
   }
@@ -479,7 +483,7 @@ bool Socket::cancelAll() {
 void Socket::initSock() {
   int val = 1;
   setOption(SOL_SOCKET, SO_REUSEADDR, val);
-  if (m_type == SOCK_STREAM) {
+  if(m_type == SOCK_STREAM) {
     setOption(IPPROTO_TCP, TCP_NODELAY, val);
   }
 }

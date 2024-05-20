@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-21 19:44:02
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-12 20:21:52
+ * @LastEditTime : 2024-05-20 16:28:13
  * @FilePath     : /sylar/fdmanager.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -10,6 +10,8 @@
  */
 #include "fdmanager.h"
 #include "sylar/hook.h"
+#include "sylar/log.h"
+#include "sylar/util.h"
 #include <asm-generic/socket.h>
 #include <cstdint>
 #include <fcntl.h>
@@ -18,6 +20,8 @@
 #include <unistd.h>
 
 namespace sylar {
+static Logger::ptr g_logger = SYLAR_LOG_ROOT();
+
 FdCtx::FdCtx(int fd)
     : m_isInit(false), m_isSocket(false), m_sysNonblock(false),
       m_userNonblock(false), m_isClosed(false), m_fd(fd),
@@ -104,6 +108,7 @@ FdCtx::ptr FdManager::get(int fd, bool auto_create) {
 
 void FdManager::del(int fd) {
   RWMutexType::WriteLock lock(m_mutex);
+  SYLAR_LOG_ERROR(g_logger) << "delete fd";
   if ((int)m_datas.size() <= fd) {
     return;
   }

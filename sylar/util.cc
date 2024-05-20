@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-03-03 15:08:03
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-06 14:44:16
+ * @LastEditTime : 2024-05-20 19:58:19
  * @FilePath     : /sylar/util.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -31,7 +31,7 @@ pid_t getThreadId() {
   return syscall(SYS_gettid);
 }
 
-uint32_t getFiberId() { return sylar::Fiber::GetId(); };
+uint32_t getFiberId() { return sylar::Fiber::GetFiberId(); };
 
 
 void BackTrace(std::vector<std::string> &bt, int size, int skip) {

@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-19 15:05:44
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-19 19:22:44
+ * @LastEditTime : 2024-05-20 19:22:41
  * @FilePath     : /sylar/tcp_server.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -80,11 +80,12 @@ bool TcpServer::bind(const std::vector<Address::ptr> &addrs,
 
 void TcpServer::startAccept(Socket::ptr sock) {
   while (!m_isStop) {
+    SYLAR_LOG_INFO(g_logger) << "=====start to accept tcp server=====";
     Socket::ptr client = sock->accept();
     if (client) {
-      SYLAR_LOG_INFO(g_logger) << "start accept";
+      SYLAR_LOG_INFO(g_logger) << "start accept tcp server success";
       client->setRecvTimeout(m_recvTimeout);
-      m_worker->schedule(
+      m_ioWorker->schedule(
           std::bind(&TcpServer::handleClient, shared_from_this(), client));
     } else {
       SYLAR_LOG_ERROR(g_logger)
@@ -92,6 +93,7 @@ void TcpServer::startAccept(Socket::ptr sock) {
     }
   }
 }
+
 bool TcpServer::start() {
   if (!m_isStop) {
     return true;

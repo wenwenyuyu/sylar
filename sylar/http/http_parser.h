@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-14 15:52:41
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-15 15:17:25
+ * @LastEditTime : 2024-05-20 13:53:05
  * @FilePath     : /sylar/http/http_parser.h
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -32,6 +32,9 @@ public:
   int getError() const { return m_error; }
   void setError(int v) { m_error = v; }
   uint64_t getContentLength();
+
+  static uint64_t GetHttpRequestBufferSize();
+  static uint64_t GetHttpRequestMaxBodySize();
 private:
   http_parser m_parser;
   HttpRequest::ptr m_data;
@@ -50,6 +53,9 @@ public:
   int getError() const { return m_error; }
   void setError(int v) { m_error = v; }
   uint64_t getContentLength();
+
+  static uint64_t GetHttpResponseBufferSize();
+  static uint64_t GetHttpResponseMaxBodySize();
 private:
   httpclient_parser m_parser;
   HttpResponse::ptr m_data;

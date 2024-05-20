@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-13 13:53:01
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-15 15:18:31
+ * @LastEditTime : 2024-05-20 15:18:18
  * @FilePath     : /sylar/http/http.h
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -325,6 +325,9 @@ private:
   std::string m_reason;
   MapType m_headers;
 };
+
+std::ostream &operator<<(std::ostream &os, const HttpRequest &req);
+std::ostream &operator<<(std::ostream &os, const HttpResponse &rsp);
 
 }
 }

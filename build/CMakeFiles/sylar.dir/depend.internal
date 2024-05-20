@@ -29,8 +29,11 @@ CMakeFiles/sylar.dir/sylar/config.cc.o
  /home/wenwenyuyu/sylar/sylar/util.h
 CMakeFiles/sylar.dir/sylar/fdmanager.cc.o
  ../sylar/hook.h
+ ../sylar/log.h
  ../sylar/mutex.h
  ../sylar/singleton.h
+ ../sylar/thread.h
+ ../sylar/util.h
  /home/wenwenyuyu/sylar/sylar/fdmanager.cc
  /home/wenwenyuyu/sylar/sylar/fdmanager.h
 CMakeFiles/sylar.dir/sylar/fiber.cc.o
@@ -79,6 +82,39 @@ CMakeFiles/sylar.dir/sylar/http/http_parser.cc.o
  ../sylar/util.h
  /home/wenwenyuyu/sylar/sylar/http/http_parser.cc
  /home/wenwenyuyu/sylar/sylar/http/http_parser.h
+CMakeFiles/sylar.dir/sylar/http/http_server.cc.o
+ ../sylar/address.h
+ ../sylar/bytearray.h
+ ../sylar/fiber.h
+ ../sylar/http/http.h
+ ../sylar/http/http_server.h
+ ../sylar/http/http_session.h
+ ../sylar/iomanager.h
+ ../sylar/log.h
+ ../sylar/mutex.h
+ ../sylar/scheduler.h
+ ../sylar/singleton.h
+ ../sylar/socket.h
+ ../sylar/stream.h
+ ../sylar/streams/socket_stream.h
+ ../sylar/tcp_server.h
+ ../sylar/thread.h
+ ../sylar/timer.h
+ ../sylar/util.h
+ /home/wenwenyuyu/sylar/sylar/http/http_server.cc
+CMakeFiles/sylar.dir/sylar/http/http_session.cc.o
+ ../sylar/address.h
+ ../sylar/bytearray.h
+ ../sylar/http/http.h
+ ../sylar/http/http11_common.h
+ ../sylar/http/http11_parser.h
+ ../sylar/http/http_parser.h
+ ../sylar/http/http_session.h
+ ../sylar/http/httpclient_parser.h
+ ../sylar/socket.h
+ ../sylar/stream.h
+ ../sylar/streams/socket_stream.h
+ /home/wenwenyuyu/sylar/sylar/http/http_session.cc
 CMakeFiles/sylar.dir/sylar/http/httpclient_parser.rl.cc.o
  /home/wenwenyuyu/sylar/sylar/http/http11_common.h
  /home/wenwenyuyu/sylar/sylar/http/httpclient_parser.h
@@ -133,6 +169,22 @@ CMakeFiles/sylar.dir/sylar/socket.cc.o
  /home/wenwenyuyu/sylar/sylar/socket.cc
  /home/wenwenyuyu/sylar/sylar/socket.h
  /home/wenwenyuyu/sylar/sylar/util.h
+CMakeFiles/sylar.dir/sylar/stream.cc.o
+ ../sylar/bytearray.h
+ ../sylar/stream.h
+ /home/wenwenyuyu/sylar/sylar/stream.cc
+CMakeFiles/sylar.dir/sylar/streams/socket_stream.cc.o
+ ../sylar/address.h
+ ../sylar/bytearray.h
+ ../sylar/log.h
+ ../sylar/mutex.h
+ ../sylar/singleton.h
+ ../sylar/socket.h
+ ../sylar/stream.h
+ ../sylar/streams/socket_stream.h
+ ../sylar/thread.h
+ ../sylar/util.h
+ /home/wenwenyuyu/sylar/sylar/streams/socket_stream.cc
 CMakeFiles/sylar.dir/sylar/tcp_server.cc.o
  ../sylar/address.h
  ../sylar/config.h

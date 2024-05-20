@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-16 14:26:28
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-19 19:35:57
+ * @LastEditTime : 2024-05-20 20:03:52
  * @FilePath     : /sylar/hook.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -177,9 +177,10 @@ retry:
       }
       return -1;
     } else {
-      SYLAR_LOG_INFO(sylar::g_logger) << hook_fun_name << " trigger";
+      SYLAR_LOG_INFO(sylar::g_logger) << hook_fun_name << " hook success";
       // 重中之重 yield出去
-      sylar::Fiber::wait();
+      sylar::Fiber::YieldToHold();
+      SYLAR_LOG_INFO(sylar::g_logger) << hook_fun_name << " hook finish success";
       // 返回
       if (timer) {
         timer->cancel();
@@ -215,7 +216,7 @@ unsigned int sleep(unsigned int seconds) {
       std::bind((void(sylar::Scheduler::*)(sylar::Fiber::ptr, int thread)) &
                     sylar::IOManager::schedule,
                 iom, fiber, -1));
-  sylar::Fiber::wait();
+  sylar::Fiber::YieldToHold();
   return 0;
 }
 
@@ -231,7 +232,7 @@ int usleep(useconds_t usec) {
       std::bind((void(sylar::Scheduler::*)(sylar::Fiber::ptr, int thread)) &
                     sylar::IOManager::schedule,
                 iom, fiber, -1));
-  sylar::Fiber::wait();
+  sylar::Fiber::YieldToHold();
   return 0;
 }
 
@@ -247,7 +248,7 @@ int nanosleep(const struct timespec *req, struct timespec *rem) {
       std::bind((void(sylar::Scheduler::*)(sylar::Fiber::ptr, int thread)) &
                     sylar::IOManager::schedule,
                 iom, fiber, -1));
-  sylar::Fiber::wait();
+  sylar::Fiber::YieldToHold();
   return 0;
 }
 
@@ -306,7 +307,7 @@ int connect_with_timeout(int sockfd, const struct sockaddr *addr, socklen_t addr
   int rt = iom->addEvent(sockfd, sylar::IOManager::WRITE);
   if (rt == 0) {
     SYLAR_LOG_ERROR(sylar::g_logger) << "connect trigger";
-    sylar::Fiber::wait();
+    sylar::Fiber::YieldToHold();
     if (timer) {
       timer->cancel();
     }
@@ -343,6 +344,7 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
 }
 
 int accept(int s, struct sockaddr *addr, socklen_t *addrlen) {
+  SYLAR_LOG_INFO(sylar::g_logger) << "start to do io accept";
   int fd = do_io(s, accept_f, "accept", sylar::IOManager::READ, SO_RCVTIMEO,
                  addr, addrlen);
   if (fd >= 0) {
@@ -365,6 +367,7 @@ ssize_t readv(int fd, const struct iovec *iov, int iovcnt) {
 }
 
 ssize_t recv(int sockfd, void *buf, size_t len, int flags) {
+  SYLAR_LOG_INFO(sylar::g_logger) << "begin to recv hook";
   return do_io(sockfd, recv_f, "recv", sylar::IOManager::READ, SO_RCVTIMEO, buf,
                len, flags);
 }
@@ -408,16 +411,17 @@ ssize_t sendmsg(int s, const struct msghdr *msg, int flags) {
 
 // 还要取消fd
 int close(int fd) {
-  if (!sylar::t_hook_enable) {
-    return close_f(fd);
+  if(!sylar::t_hook_enable) {
+      return close_f(fd);
   }
+
   sylar::FdCtx::ptr ctx = sylar::FdMgr::getInstance()->get(fd);
-  if (ctx) {
-    auto iom = sylar::IOManager::GetThis();
-    if (iom) {
-      iom->cancelAll(fd);
-    }
-    sylar::FdMgr::getInstance()->del(fd);
+  if(ctx) {
+      auto iom = sylar::IOManager::GetThis();
+      if(iom) {
+          iom->cancelAll(fd);
+      }
+      sylar::FdMgr::getInstance()->del(fd);
   }
   return close_f(fd);
 }

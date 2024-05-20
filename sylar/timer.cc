@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-06 14:20:32
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-08 15:56:27
+ * @LastEditTime : 2024-05-20 17:01:04
  * @FilePath     : /sylar/timer.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -190,41 +190,41 @@ uint64_t TimerManager::getNextTimer() {
  * @description: 获得所有该触发的定时器任务列表
  */
 void TimerManager::ListExpiredCb(std::vector<std::function<void()>> &cbs) {
-  uint64_t now_ms = GetCurrentMS();
-  std::vector<Timer::ptr> expired;
-  {
-    RWMutexType::ReadLock lock(m_mutex);
-    if (m_timers.empty()) {
-      return;
+    uint64_t now_ms = sylar::GetCurrentMS();
+    std::vector<Timer::ptr> expired;
+    {
+        RWMutexType::ReadLock lock(m_mutex);
+        if(m_timers.empty()) {
+            return;
+        }
     }
-  }
-
-  RWMutexType::WriteLock lock(m_mutex);
-
-  bool rollover = detectClockRollover(now_ms);
-  if(!rollover && ((*m_timers.begin())->m_next > now_ms)) {
-      return;
-  }
-  
-  Timer::ptr now_timer(new Timer(now_ms));
-  auto it = rollover ? m_timers.end() : m_timers.lower_bound(now_timer);
-  while(it != m_timers.end() && (*it)->m_next == now_ms) {
-      ++it;
-  }
-
-  expired.insert(expired.begin(), m_timers.begin(), it);
-  m_timers.erase(m_timers.begin(), it);
-  cbs.reserve(expired.size());
-
-  for (auto &timer : expired) {
-    cbs.push_back(timer->m_cb);
-    if(timer->m_recurring) {
-        timer->m_next = now_ms + timer->m_ms;
-        m_timers.insert(timer);
-    } else {
-        timer->m_cb = nullptr;
+    RWMutexType::WriteLock lock(m_mutex);
+    if(m_timers.empty()) {
+        return;
     }
-  }
+    bool rollover = detectClockRollover(now_ms);
+    if(!rollover && ((*m_timers.begin())->m_next > now_ms)) {
+        return;
+    }
+
+    Timer::ptr now_timer(new Timer(now_ms));
+    auto it = rollover ? m_timers.end() : m_timers.lower_bound(now_timer);
+    while(it != m_timers.end() && (*it)->m_next == now_ms) {
+        ++it;
+    }
+    expired.insert(expired.begin(), m_timers.begin(), it);
+    m_timers.erase(m_timers.begin(), it);
+    cbs.reserve(expired.size());
+
+    for(auto& timer : expired) {
+        cbs.push_back(timer->m_cb);
+        if(timer->m_recurring) {
+            timer->m_next = now_ms + timer->m_ms;
+            m_timers.insert(timer);
+        } else {
+            timer->m_cb = nullptr;
+        }
+    }
 }
 
 void TimerManager::addTimer(Timer::ptr timer, RWMutexType::WriteLock &lock) {

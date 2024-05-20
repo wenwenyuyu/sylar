@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-14 15:58:12
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-15 15:17:48
+ * @LastEditTime : 2024-05-20 13:55:24
  * @FilePath     : /sylar/http/http_parser.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -48,6 +48,22 @@ static uint64_t s_http_request_buffer_size = 0;
 static uint64_t s_http_request_max_body_size = 0;
 static uint64_t s_http_response_buffer_size = 0;
 static uint64_t s_http_response_max_body_size = 0;
+
+uint64_t HttpRequestParser::GetHttpRequestBufferSize() {
+  return s_http_request_buffer_size;
+}
+
+uint64_t HttpRequestParser::GetHttpRequestMaxBodySize() {
+  return s_http_request_max_body_size;
+}
+
+uint64_t HttpResponseParser::GetHttpResponseBufferSize() {
+  return s_http_response_buffer_size;
+}
+
+uint64_t HttpResponseParser::GetHttpResponseMaxBodySize() {
+  return s_http_response_max_body_size;
+}
 
 struct _RequestSizeIniter {
   _RequestSizeIniter() {

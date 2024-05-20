@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-04-01 16:42:01
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-19 19:10:25
+ * @LastEditTime : 2024-05-20 20:02:05
  * @FilePath     : /sylar/iomanager.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -13,6 +13,7 @@
 #include "sylar/log.h"
 #include "sylar/marco.h"
 #include "sylar/scheduler.h"
+#include "sylar/util.h"
 #include <cerrno>
 #include <cstddef>
 #include <cstdint>
@@ -65,7 +66,6 @@ void IOManager::FdContext::resetContext(EventContext &ctx) {
  * @description: 将读写事件的cb或fiber放入全局任务队列中
  */
 void IOManager::FdContext::triggerEvent(Event event) {
-  SYLAR_LOG_INFO(g_logger) << "IOManager::FdContext::triggerEvent";
   SYLAR_ASSERT(events & event);
   events = (Event)(events & ~event);
 
@@ -73,8 +73,10 @@ void IOManager::FdContext::triggerEvent(Event event) {
   EventContext &ctx = getContext(event);
   // 将事件的回调函数放入全局任务队列中
   if (ctx.cb) {
+    SYLAR_LOG_INFO(g_logger) << "IOManager::FdContext::triggerEvent cb";
     ctx.scheduler->schedule(&ctx.cb);
   } else {
+    SYLAR_LOG_INFO(g_logger) << "IOManager::FdContext::triggerEvent fiber = " << ctx.fiber->getId();
     ctx.scheduler->schedule(&ctx.fiber);
   }
   ctx.scheduler = nullptr;
@@ -491,7 +493,9 @@ void IOManager::idle() {
     // 做完一次记得跳出idle协程，去运行任务
     // 否则会导致死循环    
     Fiber::ptr cur = Fiber::GetThis();
-    cur->wait();
+    auto raw_ptr = cur.get();
+    cur.reset();
+    raw_ptr->swapOut();
   }
 }
 

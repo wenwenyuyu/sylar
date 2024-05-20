@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-03-18 14:09:10
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-04-08 15:22:32
+ * @LastEditTime : 2024-05-20 19:56:53
  * @FilePath     : /sylar/fiber.h
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -24,63 +24,148 @@ namespace sylar {
 // 子协程可以由线程主动创建，创建后当前线程获得运行的子协程指针，当子协程运行结束后将子协程返回到主协程处
 
 class Fiber : public std::enable_shared_from_this<Fiber> {
-  friend class Scheduler;
+friend class Scheduler;
 public:
   typedef std::shared_ptr<Fiber> ptr;
 
-  //协程状态
+  /**
+  * @brief 协程状态
+  */
   enum State {
+  /// 初始化状态
     INIT,
+  /// 暂停状态
     HOLD,
+  /// 执行中状态
     EXEC,
-    TERM,
-    READY,
-    EXCEPT
-  };
-
-  // 创建子协程
-  Fiber(std::function<void()> cb, std::uint32_t size = 0,
-        bool use_caller = false);
-  // 析构函数
-  ~Fiber();
-  // 将子协程运行的函数重置
-  void reset(std::function<void()> cb);
-  // 从子协程转换到主协程运行
-  void swapOut();
-  // 全局函数，将当前协程转换到主协程
-  static void wait();
-  // 从主协程恢复到子协程退出的地方继续运行
-  void resume();
-  void call();
-  void back();
-  // 所有协程的运行函数
-  static void Func();
-  static void MainFunc();
-  static void CallerMainFunc();
-
-  // 获得当前运行的协程，若当前没有设置主协程则初始化主协程
-  static Fiber::ptr GetThis();
-  static void SetThis(Fiber *f);
-
-  uint64_t getId() const { return m_id; }
-  State getState() const { return m_state; }
-  static uint64_t TotalFibers();
-  static uint64_t GetId();
-
-  // static void MainFunc();
-  // static void CallerMainFunc();
-  // void call();
-  // void back();
-
+        /// 结束状态
+        TERM,
+        /// 可执行状态
+        READY,
+        /// 异常状态
+        EXCEPT
+    };
 private:
-  Fiber();
+    /**
+     * @brief 无参构造函数
+     * @attention 每个线程第一个协程的构造
+     */
+    Fiber();
+
+public:
+    /**
+     * @brief 构造函数
+     * @param[in] cb 协程执行的函数
+     * @param[in] stacksize 协程栈大小
+     * @param[in] use_caller 是否在MainFiber上调度
+     */
+    Fiber(std::function<void()> cb, size_t stacksize = 0, bool use_caller = false);
+
+    /**
+     * @brief 析构函数
+     */
+    ~Fiber();
+
+    /**
+     * @brief 重置协程执行函数,并设置状态
+     * @pre getState() 为 INIT, TERM, EXCEPT
+     * @post getState() = INIT
+     */
+    void reset(std::function<void()> cb);
+
+    /**
+     * @brief 将当前协程切换到运行状态
+     * @pre getState() != EXEC
+     * @post getState() = EXEC
+     */
+    void swapIn();
+
+    /**
+     * @brief 将当前协程切换到后台
+     */
+    void swapOut();
+
+    /**
+     * @brief 将当前线程切换到执行状态
+     * @pre 执行的为当前线程的主协程
+     */
+    void call();
+
+    /**
+     * @brief 将当前线程切换到后台
+     * @pre 执行的为该协程
+     * @post 返回到线程的主协程
+     */
+    void back();
+
+    /**
+     * @brief 返回协程id
+     */
+    uint64_t getId() const { return m_id;}
+
+    /**
+     * @brief 返回协程状态
+     */
+    State getState() const { return m_state;}
+public:
+
+    /**
+     * @brief 设置当前线程的运行协程
+     * @param[in] f 运行协程
+     */
+    static void SetThis(Fiber* f);
+
+    /**
+     * @brief 返回当前所在的协程
+     */
+    static Fiber::ptr GetThis();
+
+    /**
+     * @brief 将当前协程切换到后台,并设置为READY状态
+     * @post getState() = READY
+     */
+    static void YieldToReady();
+
+    /**
+     * @brief 将当前协程切换到后台,并设置为HOLD状态
+     * @post getState() = HOLD
+     */
+    static void YieldToHold();
+
+    /**
+     * @brief 返回当前协程的总数量
+     */
+    static uint64_t TotalFibers();
+
+    /**
+     * @brief 协程执行函数
+     * @post 执行完成返回到线程主协程
+     */
+    static void MainFunc();
+
+    /**
+     * @brief 协程执行函数
+     * @post 执行完成返回到线程调度协程
+     */
+    static void CallerMainFunc();
+
+    /**
+     * @brief 获取当前协程的id
+     */
+    static uint64_t GetFiberId();
 private:
-  std::uint64_t m_id = 0;
-  ucontext_t m_ctx;
-  void *m_stack = nullptr;
-  std::uint32_t m_stacksize = 0;
-  std::function<void()> m_cb;
+  /// 协程id
+  uint64_t m_id = 0;
+  /// 协程运行栈大小
+  uint32_t m_stacksize = 0;
+  /// 协程状态
   State m_state = INIT;
+  /// 协程上下文
+  ucontext_t m_ctx;
+  /// 协程运行栈指针
+  void* m_stack = nullptr;
+  /// 协程运行函数
+  std::function<void()> m_cb;
 };
 
 }
