@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-20 15:50:33
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-20 16:25:04
+ * @LastEditTime : 2024-05-21 14:29:32
  * @FilePath     : /tests/test_http_server.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -10,7 +10,9 @@
  */
 
 #include "sylar/address.h"
+#include "sylar/http/http.h"
 #include "sylar/http/http_server.h"
+#include "sylar/http/http_session.h"
 #include "sylar/iomanager.h"
 #include "sylar/hook.h"
 
@@ -20,6 +22,21 @@ void run() {
   while (!server->bind(addr)) {
     sleep(2);
   }
+  auto ad = server->getServletDispatch();
+  ad->addServlet("/sylar/xx", [](sylar::http::HttpRequest::ptr req,
+                                 sylar::http::HttpResponse::ptr rsp,
+                                 sylar::http::HttpSession::ptr session) {
+    rsp->setBody(req->toString());
+    return 0;
+  });
+
+  ad->addGlobServlet("/sylar/*", [](sylar::http::HttpRequest::ptr req,
+                                 sylar::http::HttpResponse::ptr rsp,
+                                 sylar::http::HttpSession::ptr session) {
+    rsp->setBody("Glob:\r\n" + req->toString());
+    return 0;
+  });
+   
   server->start();
 }
 

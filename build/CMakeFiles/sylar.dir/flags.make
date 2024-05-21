@@ -42,6 +42,8 @@ CXX_INCLUDES = -I/home/wenwenyuyu/sylar/.
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/http/http_server.cc.o_DEFINES = __FILE__="sylar/http/http_server.cc"
 
+# Custom defines: CMakeFiles/sylar.dir/sylar/http/servlet.cc.o_DEFINES = __FILE__="sylar/http/servlet.cc"
+
 # Custom defines: CMakeFiles/sylar.dir/sylar/tcp_server.cc.o_DEFINES = __FILE__="sylar/tcp_server.cc"
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/stream.cc.o_DEFINES = __FILE__="sylar/stream.cc"
