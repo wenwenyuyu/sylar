@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-15 14:54:08
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-15 15:19:17
+ * @LastEditTime : 2024-05-22 14:53:15
  * @FilePath     : /tests/test_http_parser.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -53,7 +53,7 @@ const char test_response_data[] =
 void test_response() {
     sylar::http::HttpResponseParser parser;
     std::string tmp = test_response_data;
-    size_t s = parser.execute(&tmp[0], tmp.size());
+    size_t s = parser.execute(&tmp[0], tmp.size(), false);
     SYLAR_LOG_ERROR(g_logger) << "execute rt=" << s
         << " has_error=" << parser.hasError()
         << " is_finished=" << parser.isFinish()

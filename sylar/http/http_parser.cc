@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-14 15:58:12
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-20 13:55:24
+ * @LastEditTime : 2024-05-22 14:42:26
  * @FilePath     : /sylar/http/http_parser.cc
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -248,7 +248,10 @@ HttpResponseParser::HttpResponseParser() : m_error(0) {
   m_parser.data = this;
 }
 
-size_t HttpResponseParser::execute(char *data, size_t len) {
+size_t HttpResponseParser::execute(char *data, size_t len, bool chunk) {
+  if (chunk) {
+    httpclient_parser_init(&m_parser);
+  }
   size_t offset = httpclient_parser_execute(&m_parser, data, len, 0);
   memmove(data, data + offset, (len - offset));
   return offset;

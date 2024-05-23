@@ -2,7 +2,7 @@
  * @Author       : wenwneyuyu
  * @Date         : 2024-05-14 15:52:41
  * @LastEditors  : wenwenyuyu
- * @LastEditTime : 2024-05-20 13:53:05
+ * @LastEditTime : 2024-05-22 14:41:56
  * @FilePath     : /sylar/http/http_parser.h
  * @Description  : 
  * Copyright 2024 OBKoro1, All Rights Reserved. 
@@ -35,6 +35,9 @@ public:
 
   static uint64_t GetHttpRequestBufferSize();
   static uint64_t GetHttpRequestMaxBodySize();
+
+  const http_parser &getParser() const { return m_parser; }
+        
 private:
   http_parser m_parser;
   HttpRequest::ptr m_data;
@@ -45,7 +48,7 @@ class HttpResponseParser {
 public:
   typedef std::shared_ptr<HttpResponseParser> ptr;
   HttpResponseParser();
-  size_t execute(char *data, size_t len);
+  size_t execute(char *data, size_t len, bool chuck);
   int isFinish();
   int hasError();
 
@@ -56,6 +59,8 @@ public:
 
   static uint64_t GetHttpResponseBufferSize();
   static uint64_t GetHttpResponseMaxBodySize();
+
+  const httpclient_parser &getParser() const { return m_parser; }
 private:
   httpclient_parser m_parser;
   HttpResponse::ptr m_data;

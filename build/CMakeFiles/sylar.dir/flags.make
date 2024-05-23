@@ -32,9 +32,9 @@ CXX_INCLUDES = -I/home/wenwenyuyu/sylar/.
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/http/http.cc.o_DEFINES = __FILE__="sylar/http/http.cc"
 
-# Custom defines: CMakeFiles/sylar.dir/sylar/http/http11_parser.rl.cc.o_DEFINES = __FILE__="sylar/http/http11_parser.rl.cc"
+# Custom defines: CMakeFiles/sylar.dir/sylar/http/http11_parser.rl.cc.o_DEFINES = __FILE__="sylar/http/http11_parser.rl.cc";__FILE__="sylar/http/http11_parser.rl.cc"
 
-# Custom defines: CMakeFiles/sylar.dir/sylar/http/httpclient_parser.rl.cc.o_DEFINES = __FILE__="sylar/http/httpclient_parser.rl.cc"
+# Custom defines: CMakeFiles/sylar.dir/sylar/http/httpclient_parser.rl.cc.o_DEFINES = __FILE__="sylar/http/httpclient_parser.rl.cc";__FILE__="sylar/http/httpclient_parser.rl.cc"
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/http/http_parser.cc.o_DEFINES = __FILE__="sylar/http/http_parser.cc"
 
@@ -43,6 +43,8 @@ CXX_INCLUDES = -I/home/wenwenyuyu/sylar/.
 # Custom defines: CMakeFiles/sylar.dir/sylar/http/http_server.cc.o_DEFINES = __FILE__="sylar/http/http_server.cc"
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/http/servlet.cc.o_DEFINES = __FILE__="sylar/http/servlet.cc"
+
+# Custom defines: CMakeFiles/sylar.dir/sylar/http/http_connection.cc.o_DEFINES = __FILE__="sylar/http/http_connection.cc"
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/tcp_server.cc.o_DEFINES = __FILE__="sylar/tcp_server.cc"
 
@@ -55,4 +57,6 @@ CXX_INCLUDES = -I/home/wenwenyuyu/sylar/.
 # Custom defines: CMakeFiles/sylar.dir/sylar/thread.cc.o_DEFINES = __FILE__="sylar/thread.cc"
 
 # Custom defines: CMakeFiles/sylar.dir/sylar/mutex.cc.o_DEFINES = __FILE__="sylar/mutex.cc"
+
+# Custom defines: CMakeFiles/sylar.dir/sylar/http/uri.rl.cc.o_DEFINES = __FILE__="sylar/http/uri.rl.cc"
 

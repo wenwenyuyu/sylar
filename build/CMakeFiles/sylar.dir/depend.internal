@@ -69,6 +69,25 @@ CMakeFiles/sylar.dir/sylar/http/http11_parser.rl.cc.o
  /home/wenwenyuyu/sylar/sylar/http/http11_common.h
  /home/wenwenyuyu/sylar/sylar/http/http11_parser.h
  /home/wenwenyuyu/sylar/sylar/http/http11_parser.rl.cc
+CMakeFiles/sylar.dir/sylar/http/http_connection.cc.o
+ ../sylar/address.h
+ ../sylar/bytearray.h
+ ../sylar/http/http.h
+ ../sylar/http/http11_common.h
+ ../sylar/http/http11_parser.h
+ ../sylar/http/http_connection.h
+ ../sylar/http/http_parser.h
+ ../sylar/http/httpclient_parser.h
+ ../sylar/log.h
+ ../sylar/mutex.h
+ ../sylar/singleton.h
+ ../sylar/socket.h
+ ../sylar/stream.h
+ ../sylar/streams/socket_stream.h
+ ../sylar/thread.h
+ ../sylar/uri.h
+ ../sylar/util.h
+ /home/wenwenyuyu/sylar/sylar/http/http_connection.cc
 CMakeFiles/sylar.dir/sylar/http/http_parser.cc.o
  ../sylar/config.h
  ../sylar/http/http.h
@@ -131,6 +150,10 @@ CMakeFiles/sylar.dir/sylar/http/servlet.cc.o
  ../sylar/stream.h
  ../sylar/streams/socket_stream.h
  /home/wenwenyuyu/sylar/sylar/http/servlet.cc
+CMakeFiles/sylar.dir/sylar/http/uri.rl.cc.o
+ ../sylar/address.h
+ ../sylar/uri.h
+ /home/wenwenyuyu/sylar/sylar/http/uri.rl.cc
 CMakeFiles/sylar.dir/sylar/iomanager.cc.o
  ../sylar/fiber.h
  ../sylar/log.h
